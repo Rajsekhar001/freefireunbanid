@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="apexGrad" x1="16" y1="12" x2="112" y2="116" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF1744" />
+      <stop offset="50%" stop-color="#8B35FF" />
+      <stop offset="100%" stop-color="#0066FF" />
+    </linearGradient>
+    <linearGradient id="innerGlow" x1="64" y1="24" x2="64" y2="104" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#C8D6FF" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#080910" />
+  <path
+    d="M64 12L108 32V62C108 88.5 89.2 108.4 64 116C38.8 108.4 20 88.5 20 62V32L64 12Z"
+    fill="#0E101C"
+    stroke="url(#apexGrad)"
+    stroke-width="4"
+  />
+  <path
+    d="M64 28L91 88H76.5L70.5 74H57.5L51.5 88H37L64 28ZM64 51L59.8 62H68.2L64 51Z"
+    fill="url(#innerGlow)"
+  />
+  <path d="M44 96H84" stroke="url(#apexGrad)" stroke-width="4" stroke-linecap="round" />
+</svg>

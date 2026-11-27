@@ -1,1 +1,95 @@
 @import "tailwindcss";
+
+@theme {
+  --font-display: "Barlow Condensed", sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-obsidian: #080910;
+  --color-crimson: #D90024;
+  --color-neon-red: #FF1744;
+  --color-electric-blue: #0066FF;
+  --color-neon-purple: #8B35FF;
+}
+
+@layer base {
+  html {
+    background-color: #080910;
+    color: #ffffff;
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes ambientFloat {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0) scale(1.03);
+  }
+}
+
+.animate-gradient-text {
+  background: linear-gradient(105deg, #ffffff 0%, #ff4d6d 32%, #0066ff 68%, #8b35ff 100%);
+  background-size: 220% 220%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientShift 7s ease infinite;
+}
+
+.apex-glass {
+  background: linear-gradient(145deg, rgba(18, 21, 36, 0.82), rgba(10, 12, 22, 0.72));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px -24px rgba(0, 0, 0, 0.75);
+}
+
+.apex-gradient-border {
+  position: relative;
+}
+
+.apex-gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 23, 68, 0.5), rgba(0, 102, 255, 0.35), rgba(139, 53, 255, 0.4));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.neon-red-glow {
+  box-shadow: 0 0 24px -4px rgba(255, 23, 68, 0.45), 0 0 48px -12px rgba(217, 0, 36, 0.35);
+}
+
+.neon-blue-glow {
+  box-shadow: 0 0 24px -4px rgba(0, 102, 255, 0.45), 0 0 48px -12px rgba(139, 53, 255, 0.3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-gradient-text {
+    animation: none;
+    background-position: 0% 50%;
+  }
+}

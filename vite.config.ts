@@ -6,24 +6,39 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+    base: './',
     plugins: [
       react(),
       tailwindcss(),
-      // Copies src/assets into dist/ so root-relative URLs like
-      // "/src/assets/images/..." (e.g. generate_image output) still resolve
-      // in production builds. Do not remove.
+      // Copies standalone static files (config.js, script.js, assets/) into dist/
+      // so both direct GitHub Pages root hosting and Vite production builds resolve cleanly.
       {
-        name: 'copy-unbundled-src-assets',
+        name: 'copy-static-site-files',
         apply: 'build',
         closeBundle(error?: Error): void {
           if (error) {
             return;
           }
           const distDir = path.resolve(__dirname, 'dist');
+          if (!fs.existsSync(distDir)) {
+            return;
+          }
+
+          for (const fileName of ['config.js', 'script.js', '.nojekyll']) {
+            const srcFile = path.resolve(__dirname, fileName);
+            if (fs.existsSync(srcFile)) {
+              fs.copyFileSync(srcFile, path.resolve(distDir, fileName));
+            }
+          }
+
+          const rootAssets = path.resolve(__dirname, 'assets');
+          if (fs.existsSync(rootAssets)) {
+            fs.cpSync(rootAssets, path.resolve(distDir, 'assets'), {recursive: true, force: true});
+          }
+
           const srcAssets = path.resolve(__dirname, 'src/assets');
-          const distAssets = path.resolve(distDir, 'src/assets');
-          if (fs.existsSync(distDir) && fs.existsSync(srcAssets)) {
-            fs.cpSync(srcAssets, distAssets, {recursive: true, force: true});
+          if (fs.existsSync(srcAssets)) {
+            fs.cpSync(srcAssets, path.resolve(distDir, 'src/assets'), {recursive: true, force: true});
           }
         },
       },

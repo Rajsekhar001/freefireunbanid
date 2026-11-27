@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "APEX ID UNBAN BOT",
+  "description": "Official community access portal of APEX CARNAGE LIVE. Explore our Free Fire gaming community, verify locally, and access bot updates.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

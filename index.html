@@ -3,16 +3,740 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-    <meta name="description" content="An application built with Google AI Studio." />
-    <meta property="og:title" content="My Google AI Studio App" />
-    <meta property="og:description" content="An application built with Google AI Studio." />
+    <title>APEX ID UNBAN BOT — APEX CARNAGE LIVE</title>
+    <meta
+      name="description"
+      content="Official community access portal of APEX CARNAGE LIVE. Explore our Free Fire gaming community, verify locally, and access bot updates."
+    />
+    <meta property="og:title" content="APEX ID UNBAN BOT — APEX CARNAGE LIVE" />
+    <meta
+      property="og:description"
+      content="YOUR GAMING COMMUNITY. YOUR ACCESS. YOUR EXPERIENCE. Official community access portal of APEX CARNAGE LIVE."
+    />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="./assets/images/free-fire-unban-bot.png" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#080910" />
+    <link rel="icon" type="image/svg+xml" href="./assets/icons/apex-logo.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- Cinematic Loading Screen -->
+    <div id="loading-screen" class="loading-screen" role="dialog" aria-label="Loading APEX ID UNBAN BOT">
+      <div class="loading-glow loading-glow--red" aria-hidden="true"></div>
+      <div class="loading-glow loading-glow--blue" aria-hidden="true"></div>
+      <div class="loading-inner">
+        <img
+          src="./assets/icons/apex-logo.svg"
+          alt="APEX ID UNBAN BOT logo"
+          class="loading-logo"
+          referrerpolicy="no-referrer"
+        />
+        <h2 class="loading-title">APEX ID UNBAN BOT</h2>
+        <p class="loading-sub">APEX CARNAGE LIVE</p>
+        <div class="loading-bar-track" aria-hidden="true">
+          <div class="loading-bar-fill"></div>
+        </div>
+        <button type="button" id="skip-intro-btn" class="loading-skip">Skip Intro</button>
+      </div>
+    </div>
+
+    <!-- Animated Background Particles -->
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+    <!-- 3-Zone Top Navigation Bar -->
+    <header class="site-header">
+      <div class="container header-row">
+        <a href="#hero" class="brand-link">
+          <img
+            src="./assets/icons/apex-logo.svg"
+            alt="APEX ID UNBAN BOT"
+            class="brand-logo"
+            referrerpolicy="no-referrer"
+          />
+          <span class="brand-title">APEX ID UNBAN BOT</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#hero" class="nav-link">Overview</a>
+          <a href="#showcase" class="nav-link">Showcase</a>
+          <a href="#verification" class="nav-link">Verify Access</a>
+          <a href="#analytics" class="nav-link">Analytics</a>
+        </nav>
+
+        <div class="header-actions">
+          <button type="button" id="header-cta-locked" class="header-cta" data-scroll-verify>
+            Get Started
+          </button>
+          <a
+            id="header-cta-unlocked"
+            class="header-cta is-unlocked hidden"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-telegram-track
+          >
+            Open Telegram
+          </a>
+
+          <button
+            type="button"
+            id="mobile-menu-toggle"
+            class="mobile-toggle"
+            aria-expanded="false"
+            aria-label="Open navigation menu"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="mobile-menu" class="mobile-menu hidden">
+        <nav class="mobile-menu-nav" aria-label="Mobile navigation">
+          <a href="#hero" class="mobile-menu-link">Overview</a>
+          <a href="#showcase" class="mobile-menu-link">Showcase</a>
+          <a href="#verification" class="mobile-menu-link">Verify Access</a>
+          <a href="#analytics" class="mobile-menu-link">Analytics</a>
+          <button type="button" id="mobile-cta-locked" class="mobile-menu-cta" data-scroll-verify>
+            Get Started
+          </button>
+          <a
+            id="mobile-cta-unlocked"
+            class="mobile-menu-cta is-unlocked hidden"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-telegram-track
+          >
+            Open Telegram
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero Section -->
+      <section id="hero" class="hero-section">
+        <div class="hero-orb hero-orb--red" aria-hidden="true"></div>
+        <div class="hero-orb hero-orb--blue" aria-hidden="true"></div>
+        <div class="hero-orb hero-orb--purple" aria-hidden="true"></div>
+
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="hero-kicker">
+              APEX CARNAGE LIVE<span class="sep" aria-hidden="true">·</span>Community Access Portal
+            </p>
+            <h1 class="hero-headline">
+              <span class="gradient-text">APEX ID UNBAN BOT</span>
+            </h1>
+            <p class="hero-tagline">“YOUR GAMING COMMUNITY. YOUR ACCESS. YOUR EXPERIENCE.”</p>
+            <p class="hero-desc">
+              Welcome to APEX ID UNBAN BOT, the official community access portal of APEX CARNAGE LIVE.
+              Explore our gaming community, access available bot services and stay connected with the latest updates.
+            </p>
+
+            <div class="hero-ctas">
+              <button type="button" class="btn btn-primary neon-red-glow" data-scroll-verify>
+                <span>GET STARTED</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M7 7l10 10M17 7v10H7" />
+                </svg>
+              </button>
+
+              <button type="button" id="hero-tg-locked" class="btn btn-telegram neon-blue-glow" data-scroll-verify>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+                <span>JOIN TELEGRAM</span>
+              </button>
+
+              <a
+                id="hero-tg-unlocked"
+                class="btn btn-telegram neon-blue-glow hidden"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-telegram-track
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+                <span>OPEN TELEGRAM BOT</span>
+              </a>
+            </div>
+
+            <div class="hero-meta">
+              <span>Instagram @apex.carnage.live</span>
+              <span aria-hidden="true">·</span>
+              <span>Local Browser Verification</span>
+              <span aria-hidden="true">·</span>
+              <span id="hero-status-text">Verify Screenshot to Unlock</span>
+            </div>
+          </div>
+
+          <div class="hero-media">
+            <div class="apex-glass apex-gradient-border banner-frame">
+              <div class="banner-viewport">
+                <img
+                  id="hero-banner-img"
+                  src="./assets/images/free-fire-unban-bot.png"
+                  alt="APEX ID UNBAN BOT Free Fire Free Service and Unban Success thumbnail"
+                  class="banner-img"
+                  referrerpolicy="no-referrer"
+                />
+                <div class="banner-scrim" aria-hidden="true"></div>
+                <button
+                  type="button"
+                  id="hero-expand-btn"
+                  class="expand-btn"
+                  aria-label="Inspect banner full screen"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                  </svg>
+                </button>
+                <div class="banner-caption-bar">
+                  <div>
+                    <p id="hero-banner-cat" class="banner-cat">Official Thumbnail</p>
+                    <p id="hero-banner-title" class="banner-title">Free Fire Unban Bot Thumbnail</p>
+                  </div>
+                  <div id="hero-slide-switcher" class="slide-switcher" role="tablist" aria-label="Select preview banner"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Visual Showcase Section -->
+      <section id="showcase" class="section-block">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker kicker-blue">01 · Visual Showcase</p>
+              <h2 class="section-title">Community Highlights &amp; Bot Previews</h2>
+            </div>
+            <p class="section-subtitle">
+              Official artwork and community service previews from APEX CARNAGE LIVE. Click any banner to inspect full detail.
+            </p>
+          </div>
+          <div id="showcase-grid" class="showcase-grid"></div>
+        </div>
+      </section>
+
+      <!-- 5-Step Local Instagram Verification -->
+      <section id="verification" class="section-block">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker kicker-red">02 · Community Access Gate</p>
+              <h2 class="section-title">Instagram Verification &amp; Telegram Unlock</h2>
+            </div>
+            <p class="section-subtitle">
+              Follow @apex.carnage.live and verify your screenshot locally in your browser to unlock the Telegram bot link.
+            </p>
+          </div>
+
+          <div class="steps-strip" id="steps-strip">
+            <div class="step-pill" data-step="1"><span class="step-num">01</span><p class="step-label">Follow Instagram</p></div>
+            <div class="step-pill" data-step="2"><span class="step-num">02</span><p class="step-label">Upload Screenshot</p></div>
+            <div class="step-pill" data-step="3"><span class="step-num">03</span><p class="step-label">Preview Image</p></div>
+            <div class="step-pill" data-step="4"><span class="step-num">04</span><p class="step-label">Confirm Follow</p></div>
+            <div class="step-pill" data-step="5"><span class="step-num">05</span><p class="step-label">Unlock Telegram</p></div>
+          </div>
+
+          <div class="verify-layout">
+            <div class="verify-left">
+              <!-- Step 1 -->
+              <div class="apex-glass verify-card reveal">
+                <div class="step1-row">
+                  <div>
+                    <p class="card-kicker">STEP 01 · INSTAGRAM</p>
+                    <h3 class="card-title">Follow @apex.carnage.live</h3>
+                    <p class="card-text">
+                      Open our official Instagram profile, tap Follow, and take a quick screenshot.
+                    </p>
+                  </div>
+                  <a
+                    id="follow-instagram-btn"
+                    href="https://www.instagram.com/apex.carnage.live/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-gradient-red neon-red-glow"
+                  >
+                    <span>Follow Instagram</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" />
+                    </svg>
+                  </a>
+                </div>
+                <p id="ig-opened-note" class="status-note hidden">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><path d="M22 4L12 14.01l-3-3" />
+                  </svg>
+                  <span>Instagram link opened. Upload your follow screenshot below.</span>
+                </p>
+              </div>
+
+              <!-- Step 2 & 3 -->
+              <div class="apex-glass verify-card reveal">
+                <div class="upload-header">
+                  <div>
+                    <p class="card-kicker">STEP 02 &amp; 03 · LOCAL UPLOAD &amp; PREVIEW</p>
+                    <h3 class="card-title">Upload Follow Screenshot</h3>
+                  </div>
+                  <button type="button" id="clear-screenshot-btn" class="btn-ghost-sm hidden">
+                    Clear
+                  </button>
+                </div>
+
+                <input
+                  type="file"
+                  id="screenshot-input"
+                  accept="image/*"
+                  class="sr-only"
+                />
+
+                <div id="dropzone" class="dropzone">
+                  <div class="dropzone-icon" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" />
+                    </svg>
+                  </div>
+                  <p id="dropzone-title" class="dropzone-title">
+                    Drag &amp; drop your screenshot here, or browse from device
+                  </p>
+                  <p class="dropzone-sub">
+                    PNG, JPG, or WEBP up to 15 MB · Processed strictly inside your browser
+                  </p>
+                  <label for="screenshot-input" class="browse-label">Select Screenshot</label>
+                </div>
+
+                <div id="preview-box" class="preview-box hidden">
+                  <div class="preview-img-wrap">
+                    <img id="preview-img" alt="Uploaded Instagram follow screenshot preview" />
+                  </div>
+                  <div class="preview-footer">
+                    <span id="preview-filename" class="preview-filename"></span>
+                    <span id="preview-dims" class="preview-dims"></span>
+                  </div>
+                </div>
+
+                <p id="upload-error" role="alert" class="error-text hidden"></p>
+              </div>
+
+              <!-- Step 4 -->
+              <div class="apex-glass verify-card reveal">
+                <p class="card-kicker">STEP 04 · LOCAL CONFIRMATION</p>
+                <h3 class="card-title">Confirm Follow Screenshot</h3>
+
+                <label id="confirm-label" class="confirm-box is-disabled">
+                  <input type="checkbox" id="confirm-checkbox" disabled />
+                  <span>
+                    I confirm that the uploaded screenshot clearly shows my Instagram account following
+                    <strong>@apex.carnage.live</strong>.
+                  </span>
+                </label>
+
+                <div class="disclaimer-row">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M9 12l2 2 4-4" />
+                  </svg>
+                  <span>
+                    Local validation &amp; user confirmation only: your screenshot stays on your device, is never uploaded to any server, and is not verified through Instagram’s API.
+                  </span>
+                </div>
+
+                <p id="step1-warning" class="error-text hidden">
+                  Please complete Step 1 (Follow @apex.carnage.live) before unlocking the Telegram bot link.
+                </p>
+
+                <div style="margin-top: 1.25rem;">
+                  <button
+                    type="button"
+                    id="unlock-btn"
+                    class="btn btn-gradient-blue neon-blue-glow btn-full"
+                    disabled
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                    </svg>
+                    <span>Verify &amp; Unlock Telegram Link</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 5 Right Card -->
+            <div class="verify-right">
+              <div class="apex-glass apex-gradient-border unlock-panel">
+                <div>
+                  <p class="card-kicker">STEP 05 · ACCESS STATUS</p>
+
+                  <!-- Locked State -->
+                  <div id="state-locked">
+                    <div class="status-badge-icon status-badge-icon--locked" aria-hidden="true">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                    </div>
+                    <h3 class="unlock-title">Telegram Link Locked</h3>
+                    <p class="card-text">
+                      Complete Steps 1 through 4 on the left to unlock instant access to the official Telegram bot link.
+                    </p>
+                    <div class="checklist-summary">
+                      <div class="checklist-row">
+                        <span>1. Follow @apex.carnage.live</span>
+                        <span id="status-step1" class="checklist-val">Pending</span>
+                      </div>
+                      <div class="checklist-row">
+                        <span>2. Screenshot Validated</span>
+                        <span id="status-step2" class="checklist-val">Waiting</span>
+                      </div>
+                      <div class="checklist-row">
+                        <span>3. User Confirmed</span>
+                        <span id="status-step3" class="checklist-val">Pending</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Unlocked State (Bot URL injected dynamically ONLY when unlocked) -->
+                  <div id="state-unlocked" class="hidden">
+                    <div class="status-badge-icon status-badge-icon--unlocked" aria-hidden="true">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><path d="M22 4L12 14.01l-3-3" />
+                      </svg>
+                    </div>
+                    <h3 class="unlock-title">Telegram Access Unlocked</h3>
+                    <p class="card-text">
+                      Your local confirmation is saved on this browser. You can now open the official APEX CARNAGE LIVE Telegram bot below.
+                    </p>
+
+                    <div id="confirmed-file-box" class="confirmed-file-box hidden">
+                      <strong style="color: #fff;">Confirmed Local Screenshot</strong>
+                      <p id="confirmed-file-meta" style="margin: 0.25rem 0 0; color: var(--text-muted);"></p>
+                    </div>
+
+                    <div class="bot-link-card">
+                      <div class="bot-link-meta">
+                        <p class="bot-link-label">Official Bot Link</p>
+                        <p id="unlocked-bot-url" class="bot-link-url"></p>
+                      </div>
+                      <button type="button" id="copy-bot-btn" class="copy-btn">Copy</button>
+                    </div>
+
+                    <a
+                      id="unlocked-bot-cta"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-telegram-track
+                      class="btn btn-gradient-blue neon-blue-glow btn-full"
+                      style="margin-top: 1rem;"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                      </svg>
+                      <span id="unlocked-bot-cta-label">OPEN TELEGRAM BOT</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div id="reset-wrap" class="reset-wrap hidden">
+                  <button type="button" id="reset-verify-btn" class="reset-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" />
+                    </svg>
+                    <span>Reset Local Verification State</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Real Analytics Section -->
+      <section id="analytics" class="section-block">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker kicker-purple">03 · Live Portal Metrics</p>
+              <h2 class="section-title">Community Traffic &amp; Click Analytics</h2>
+            </div>
+            <p id="analytics-source-note" class="section-subtitle">
+              Displaying real counts recorded on this browser. Add your free CounterAPI v2 workspace slug in config.js for global counts across visitors.
+            </p>
+          </div>
+
+          <div class="analytics-grid">
+            <div class="apex-glass metric-card reveal">
+              <div class="metric-top">
+                <span class="metric-scope" data-metric-scope="visitors">This Browser</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+              </div>
+              <p class="metric-value" data-metric-val="visitors">—</p>
+              <h3 class="metric-label">Total Visitors</h3>
+              <p class="metric-sub">Unique browser sessions recorded</p>
+            </div>
+
+            <div class="apex-glass metric-card reveal">
+              <div class="metric-top">
+                <span class="metric-scope" data-metric-scope="telegramClicks">This Browser</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b35ff" stroke-width="2" aria-hidden="true"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" /></svg>
+              </div>
+              <p class="metric-value" data-metric-val="telegramClicks">—</p>
+              <h3 class="metric-label">Telegram Button Clicks</h3>
+              <p class="metric-sub">Unlocked bot link opens</p>
+            </div>
+
+            <div class="apex-glass metric-card reveal">
+              <div class="metric-top">
+                <span class="metric-scope" data-metric-scope="instagramClicks">This Browser</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1744" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></svg>
+              </div>
+              <p class="metric-value" data-metric-val="instagramClicks">—</p>
+              <h3 class="metric-label">Instagram Button Clicks</h3>
+              <p class="metric-sub">Profile visits to @apex.carnage.live</p>
+            </div>
+
+            <div class="apex-glass metric-card reveal">
+              <div class="metric-top">
+                <span class="metric-scope" data-metric-scope="screenshotAttempts">This Browser</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" /></svg>
+              </div>
+              <p class="metric-value" data-metric-val="screenshotAttempts">—</p>
+              <h3 class="metric-label">Screenshot Submissions</h3>
+              <p class="metric-sub">Local verification attempts checked</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-brand">
+              <img src="./assets/icons/apex-logo.svg" alt="APEX CARNAGE LIVE" referrerpolicy="no-referrer" />
+              <div>
+                <h2>APEX CARNAGE LIVE</h2>
+                <p>Gaming Technology | Community | Educational Purposes</p>
+              </div>
+            </div>
+            <p class="footer-desc">
+              APEX ID UNBAN BOT is the community portal for APEX CARNAGE LIVE, featuring local browser verification, original Web Audio soundscapes, and real public counter telemetry.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="footer-heading">Community Links</h3>
+            <ul class="footer-list">
+              <li>
+                <a
+                  href="https://www.instagram.com/apex.carnage.live/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  id="footer-ig-link"
+                  class="footer-link"
+                >
+                  Instagram: @apex.carnage.live
+                </a>
+              </li>
+              <li>
+                <button type="button" id="footer-tg-locked" class="footer-btn" data-scroll-verify>
+                  Telegram: Complete Verification to Unlock
+                </button>
+                <a
+                  id="footer-tg-unlocked"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-telegram-track
+                  class="footer-link hidden"
+                >
+                  Telegram: @Apex_unban_bot
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="footer-heading">Legal &amp; Privacy</h3>
+            <ul class="footer-list">
+              <li>
+                <button type="button" id="open-privacy-btn" class="footer-btn">
+                  Privacy Policy
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>© 2026 APEX CARNAGE LIVE. All rights reserved.</p>
+          <p>Static Community Portal · Local Browser Verification</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Floating APEX PHONK MODE Audio Player -->
+    <aside class="phonk-player" aria-label="APEX PHONK MODE audio player">
+      <div class="apex-glass apex-gradient-border phonk-shell">
+        <div class="phonk-row">
+          <button
+            type="button"
+            id="phonk-play-btn"
+            class="phonk-play-btn neon-red-glow"
+            aria-label="Play APEX PHONK MODE"
+          >
+            <svg id="phonk-icon-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <polygon points="6,4 20,12 6,20" />
+            </svg>
+            <svg id="phonk-icon-pause" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" />
+            </svg>
+          </button>
+
+          <div class="phonk-meta">
+            <p class="phonk-title">APEX PHONK MODE</p>
+            <div id="visualizer-bars" class="visualizer-bars" aria-hidden="true">
+              <span class="viz-bar"></span><span class="viz-bar"></span><span class="viz-bar"></span>
+              <span class="viz-bar"></span><span class="viz-bar"></span><span class="viz-bar"></span>
+              <span class="viz-bar"></span><span class="viz-bar"></span><span class="viz-bar"></span>
+              <span class="viz-bar"></span>
+            </div>
+          </div>
+
+          <button type="button" id="phonk-mute-btn" class="phonk-icon-btn" aria-label="Mute audio">
+            <svg id="phonk-icon-vol" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+            </svg>
+            <svg id="phonk-icon-muted" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1744" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />
+            </svg>
+          </button>
+
+          <div class="phonk-vol-desktop">
+            <input
+              type="range"
+              id="phonk-volume-desktop"
+              class="phonk-slider"
+              min="0"
+              max="1"
+              step="0.01"
+              value="0.55"
+              aria-label="Phonk music volume"
+            />
+          </div>
+
+          <button
+            type="button"
+            id="phonk-expand-btn"
+            class="phonk-icon-btn phonk-expand-btn"
+            aria-expanded="false"
+            aria-label="Toggle volume slider"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+          </button>
+        </div>
+
+        <div id="phonk-mobile-drawer" class="phonk-mobile-drawer hidden">
+          <span>Volume</span>
+          <input
+            type="range"
+            id="phonk-volume-mobile"
+            class="phonk-slider"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.55"
+            aria-label="Phonk music volume mobile"
+          />
+          <span id="phonk-vol-pct" style="font-family: var(--font-mono);">55%</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Image Lightbox Modal -->
+    <div id="lightbox-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="Image preview">
+      <div class="apex-glass apex-gradient-border modal-card">
+        <div class="modal-head">
+          <div>
+            <p id="lightbox-cat" class="banner-cat"></p>
+            <h3 id="lightbox-title" class="card-title" style="margin-top: 0.15rem;"></h3>
+          </div>
+          <button type="button" id="lightbox-close" class="modal-close" aria-label="Close image preview">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="lightbox-img-box">
+          <img id="lightbox-img" alt="" referrerpolicy="no-referrer" />
+        </div>
+        <p id="lightbox-caption" class="card-text" style="padding: 0.75rem 0.25rem 0.25rem;"></p>
+      </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacy-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
+      <div class="apex-glass apex-gradient-border modal-card modal-card--narrow">
+        <div class="modal-head modal-head--border">
+          <div>
+            <p class="section-kicker kicker-blue">APEX CARNAGE LIVE</p>
+            <h2 id="privacy-title" class="section-title" style="font-size: 1.85rem;">
+              Privacy Policy &amp; Local Verification Notice
+            </h2>
+          </div>
+          <button type="button" id="privacy-close" class="modal-close" aria-label="Close privacy policy">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="privacy-sections">
+          <div>
+            <h3>1. Zero Screenshot Uploads</h3>
+            <p>
+              Screenshots selected during Step 2 are read exclusively inside your web browser using local object URLs for preview and dimension validation. Images are never uploaded, transmitted, or stored on any external server or database.
+            </p>
+          </div>
+          <div>
+            <h3>2. Local Verification Disclaimer</h3>
+            <p>
+              The confirmation step is a local browser check and user attestation only. This site does not connect to Instagram’s private APIs or claim automated server-side follow verification.
+            </p>
+          </div>
+          <div>
+            <h3>3. Browser Storage (localStorage &amp; sessionStorage)</h3>
+            <p>
+              We use browser storage solely to remember whether you completed the local verification gate, save your APEX PHONK MODE audio preferences, and prevent duplicate visitor counts within the same tab session.
+            </p>
+          </div>
+          <div>
+            <h3>4. Anonymous Public Counters</h3>
+            <p>
+              When CounterAPI v2 is configured, anonymous numeric increment requests are sent for total visitors, Instagram clicks, Telegram clicks, and screenshot submission attempts. No personal identifiers or image files are collected.
+            </p>
+          </div>
+        </div>
+        <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end;">
+          <button type="button" id="privacy-done" class="btn btn-telegram">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="sr-announce" class="sr-only" aria-live="polite"></div>
+
+    <script src="./config.js" defer></script>
+    <script src="./script.js" defer></script>
   </body>
 </html>
-
