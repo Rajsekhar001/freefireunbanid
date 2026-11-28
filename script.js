@@ -312,13 +312,123 @@
   }
 
   // --------------------------------------------------------------------------
-  // 4. HERO BANNER, PROOF GALLERY (PHOTOS & VIDEOS) & LIGHTBOX
+  // 4. HERO BANNER, PROOF VAULT CAROUSEL, ANDROID SWIPE & AUTO-SWIPE LIGHTBOX
   // --------------------------------------------------------------------------
   let activeSlideIndex = 0;
   let lightboxItems = [];
   let lightboxIndex = 0;
+  let lightboxAutoplayEnabled = true;
+  let lightboxAutoplayTimer = null;
+  let lightboxTouching = false;
+  let vaultCarouselSyncFn = null;
+  let vaultCloseFn = null;
 
-  function renderLightboxItem() {
+  function triggerSwipeAnimation(el, direction) {
+    if (!el || prefersReducedMotion) return;
+    el.classList.remove('is-swipe-next', 'is-swipe-prev');
+    void el.offsetWidth;
+    if (direction > 0) {
+      el.classList.add('is-swipe-next');
+    } else if (direction < 0) {
+      el.classList.add('is-swipe-prev');
+    }
+  }
+
+  function bindSwipeGesture(containerEl, onNext, onPrev, onTouchStartCb, onTouchEndCb) {
+    if (!containerEl) return { wasRecentSwipe: () => false };
+    let startX = 0;
+    let startY = 0;
+    let lastX = 0;
+    let lastY = 0;
+    let tracking = false;
+    let lastSwipeTime = 0;
+
+    containerEl.addEventListener(
+      'touchstart',
+      (e) => {
+        if (!e.touches || e.touches.length !== 1) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        lastX = startX;
+        lastY = startY;
+        tracking = true;
+        if (onTouchStartCb) onTouchStartCb();
+      },
+      { passive: true }
+    );
+
+    containerEl.addEventListener(
+      'touchmove',
+      (e) => {
+        if (!tracking || !e.touches || e.touches.length !== 1) return;
+        lastX = e.touches[0].clientX;
+        lastY = e.touches[0].clientY;
+      },
+      { passive: true }
+    );
+
+    const finishTouch = () => {
+      if (!tracking) return;
+      tracking = false;
+      const dx = lastX - startX;
+      const dy = lastY - startY;
+      if (Math.abs(dx) > 38 && Math.abs(dx) > Math.abs(dy) * 1.15) {
+        lastSwipeTime = Date.now();
+        if (dx < 0) {
+          onNext();
+        } else {
+          onPrev();
+        }
+      }
+      if (onTouchEndCb) onTouchEndCb();
+    };
+
+    containerEl.addEventListener('touchend', finishTouch, { passive: true });
+    containerEl.addEventListener(
+      'touchcancel',
+      () => {
+        tracking = false;
+        if (onTouchEndCb) onTouchEndCb();
+      },
+      { passive: true }
+    );
+
+    return {
+      wasRecentSwipe: () => Date.now() - lastSwipeTime < 300,
+    };
+  }
+
+  function stopLightboxAutoplay() {
+    if (lightboxAutoplayTimer !== null) {
+      window.clearInterval(lightboxAutoplayTimer);
+      lightboxAutoplayTimer = null;
+    }
+  }
+
+  function updateLightboxAutoplayUI() {
+    const btn = document.getElementById('lightbox-autoplay');
+    const label = document.getElementById('lightbox-autoplay-label');
+    const hasMultiple = lightboxItems.length > 1;
+    if (!btn) return;
+    btn.classList.toggle('hidden', !hasMultiple);
+    btn.classList.toggle('is-playing', lightboxAutoplayEnabled);
+    btn.setAttribute('aria-pressed', lightboxAutoplayEnabled ? 'true' : 'false');
+    if (label) label.textContent = lightboxAutoplayEnabled ? 'Auto: ON' : 'Auto: OFF';
+  }
+
+  function resetLightboxAutoplay() {
+    stopLightboxAutoplay();
+    const modal = document.getElementById('lightbox-modal');
+    const isOpen = modal && !modal.classList.contains('hidden');
+    if (!isOpen || !lightboxAutoplayEnabled || lightboxItems.length <= 1 || lightboxTouching) return;
+    const current = lightboxItems[lightboxIndex];
+    if (current && current.type === 'video') return;
+    lightboxAutoplayTimer = window.setInterval(() => {
+      stepLightbox(1, true);
+    }, 3600);
+  }
+
+  function renderLightboxItem(direction) {
     const modal = document.getElementById('lightbox-modal');
     const asset = lightboxItems[lightboxIndex];
     if (!modal || !asset) return;
@@ -343,9 +453,11 @@
       vid.src = asset.src;
       if (asset.poster) vid.poster = asset.poster;
       vid.load();
+      triggerSwipeAnimation(vid, direction || 0);
     } else if (img) {
       img.src = asset.src;
       img.alt = asset.alt || asset.title || 'Proof preview';
+      triggerSwipeAnimation(img, direction || 0);
     }
 
     document.getElementById('lightbox-caption').textContent = asset.caption || '';
@@ -365,6 +477,7 @@
           String(lightboxItems.length).padStart(2, '0');
       }
     }
+    updateLightboxAutoplayUI();
   }
 
   function openLightbox(asset, list, index) {
@@ -372,17 +485,23 @@
     if (!modal || !asset) return;
     lightboxItems = Array.isArray(list) && list.length ? list : [asset];
     lightboxIndex = typeof index === 'number' && index >= 0 ? index : 0;
-    renderLightboxItem();
+    renderLightboxItem(1);
     modal.classList.remove('hidden');
+    if (vaultCarouselSyncFn) vaultCarouselSyncFn();
+    resetLightboxAutoplay();
   }
 
-  function stepLightbox(delta) {
+  function stepLightbox(delta, fromAutoplay) {
     if (lightboxItems.length <= 1) return;
     lightboxIndex = (lightboxIndex + delta + lightboxItems.length) % lightboxItems.length;
-    renderLightboxItem();
+    renderLightboxItem(delta >= 0 ? 1 : -1);
+    if (!fromAutoplay) {
+      resetLightboxAutoplay();
+    }
   }
 
   function closeLightbox() {
+    stopLightboxAutoplay();
     const modal = document.getElementById('lightbox-modal');
     const vid = document.getElementById('lightbox-video');
     if (vid) {
@@ -390,6 +509,7 @@
       vid.currentTime = 0;
     }
     if (modal) modal.classList.add('hidden');
+    if (vaultCarouselSyncFn) vaultCarouselSyncFn();
   }
 
   function initShowcase() {
@@ -446,16 +566,115 @@
       }
     }
 
-    // Separate Proof Vault Overlay (Photos & Videos load only when clicked)
+    // Separate Proof Vault Overlay (Photos load only when clicked + Android Swipe + Auto-Swipe)
     const proofVaultModal = document.getElementById('proof-vault-modal');
     const proofVaultClose = document.getElementById('proof-vault-close');
     const proofVaultCloseIcon = document.getElementById('proof-vault-close-icon');
     const proofGrid = document.getElementById('proof-grid');
     const filterBar = document.getElementById('proof-filters');
     const summaryBadge = document.getElementById('proof-summary-badge');
+
+    const carouselViewport = document.getElementById('proof-carousel-viewport');
+    const carouselStage = document.getElementById('proof-carousel-stage');
+    const carouselMediaBtn = document.getElementById('proof-carousel-media-btn');
+    const carouselImg = document.getElementById('proof-carousel-img');
+    const carouselCounter = document.getElementById('proof-carousel-counter');
+    const carouselCat = document.getElementById('proof-carousel-cat');
+    const carouselTitle = document.getElementById('proof-carousel-title');
+    const carouselCaption = document.getElementById('proof-carousel-caption');
+    const carouselPrev = document.getElementById('proof-carousel-prev');
+    const carouselNext = document.getElementById('proof-carousel-next');
+    const carouselAutoBtn = document.getElementById('proof-slider-autoplay');
+    const carouselAutoLabel = document.getElementById('proof-slider-autoplay-label');
+    const progressFill = document.getElementById('proof-progress-fill');
+
     const proofs = CONFIG.proofAssets || [];
     let activeFilter = 'all';
+    let filteredList = proofs.slice();
+    let carouselIndex = 0;
+    let carouselAutoEnabled = true;
+    let carouselTouching = false;
+    let carouselTimer = null;
+    let carouselSwipeGuard = { wasRecentSwipe: () => false };
     let proofRenderedOnce = false;
+    const AUTO_SWIPE_MS = 3600;
+
+    const restartProgressBar = (active) => {
+      if (!progressFill) return;
+      progressFill.style.transition = 'none';
+      progressFill.style.width = '0%';
+      if (!active) return;
+      void progressFill.offsetWidth;
+      progressFill.style.transition = 'width ' + AUTO_SWIPE_MS + 'ms linear';
+      progressFill.style.width = '100%';
+    };
+
+    const stopCarouselAutoplay = () => {
+      if (carouselTimer !== null) {
+        window.clearInterval(carouselTimer);
+        carouselTimer = null;
+      }
+      restartProgressBar(false);
+    };
+
+    const syncCarouselAutoplay = () => {
+      stopCarouselAutoplay();
+      if (carouselAutoBtn) {
+        carouselAutoBtn.classList.toggle('is-playing', carouselAutoEnabled);
+        carouselAutoBtn.setAttribute('aria-pressed', carouselAutoEnabled ? 'true' : 'false');
+      }
+      if (carouselAutoLabel) {
+        carouselAutoLabel.textContent = carouselAutoEnabled ? 'Auto-Swipe: ON' : 'Auto-Swipe: OFF';
+      }
+
+      const pvOpen = proofVaultModal && !proofVaultModal.classList.contains('hidden');
+      const lbModal = document.getElementById('lightbox-modal');
+      const lbOpen = lbModal && !lbModal.classList.contains('hidden');
+      if (!pvOpen || lbOpen || !carouselAutoEnabled || carouselTouching || filteredList.length <= 1) {
+        return;
+      }
+
+      restartProgressBar(true);
+      carouselTimer = window.setInterval(() => {
+        stepCarousel(1, true);
+      }, AUTO_SWIPE_MS);
+    };
+
+    vaultCarouselSyncFn = syncCarouselAutoplay;
+
+    const renderCarouselSlide = (direction) => {
+      if (!filteredList.length) return;
+      if (carouselIndex >= filteredList.length) carouselIndex = 0;
+      const item = filteredList[carouselIndex];
+      if (!item) return;
+
+      if (carouselImg) {
+        carouselImg.src = item.src;
+        carouselImg.alt = item.alt || item.title || 'Verified unban proof';
+      }
+      if (carouselCounter) {
+        carouselCounter.textContent =
+          String(carouselIndex + 1).padStart(2, '0') +
+          ' / ' +
+          String(filteredList.length).padStart(2, '0');
+      }
+      if (carouselCat) carouselCat.textContent = item.category || 'Verified Proof';
+      if (carouselTitle) carouselTitle.textContent = item.title || '';
+      if (carouselCaption) carouselCaption.textContent = item.caption || '';
+
+      triggerSwipeAnimation(carouselStage, direction || 0);
+    };
+
+    function stepCarousel(delta, fromAutoplay) {
+      if (filteredList.length <= 1) return;
+      carouselIndex = (carouselIndex + delta + filteredList.length) % filteredList.length;
+      renderCarouselSlide(delta >= 0 ? 1 : -1);
+      if (fromAutoplay) {
+        restartProgressBar(true);
+      } else {
+        syncCarouselAutoplay();
+      }
+    }
 
     const updateFilterCounts = () => {
       const counts = { all: proofs.length, 'before-after': 0, 'multi-id': 0, reviews: 0 };
@@ -483,15 +702,17 @@
     const renderProofGrid = (immediateReveal) => {
       if (!proofGrid) return;
       proofGrid.innerHTML = '';
-      const filtered =
-        activeFilter === 'all' ? proofs : proofs.filter((item) => item.group === activeFilter);
+      filteredList =
+        activeFilter === 'all' ? proofs.slice() : proofs.filter((item) => item.group === activeFilter);
+      carouselIndex = 0;
+      renderCarouselSlide(1);
 
       if (summaryBadge) {
         summaryBadge.textContent =
-          'Showing ' + filtered.length + ' Verified Proof' + (filtered.length === 1 ? '' : 's');
+          'Showing ' + filteredList.length + ' Verified Proof' + (filteredList.length === 1 ? '' : 's');
       }
 
-      if (!filtered.length) {
+      if (!filteredList.length) {
         proofGrid.innerHTML =
           '<div class="apex-glass apex-gradient-border proof-empty-card reveal is-visible">' +
           '<div class="proof-empty-icon" aria-hidden="true">' +
@@ -507,7 +728,7 @@
         return;
       }
 
-      filtered.forEach((item, idx) => {
+      filteredList.forEach((item, idx) => {
         const isVideo = item.type === 'video';
         const article = document.createElement('article');
         article.className =
@@ -554,7 +775,7 @@
 
         article
           .querySelector('.proof-img-btn')
-          .addEventListener('click', () => openLightbox(item, filtered, idx));
+          .addEventListener('click', () => openLightbox(item, filteredList, idx));
         proofGrid.appendChild(article);
       });
     };
@@ -569,11 +790,14 @@
       if (!proofRenderedOnce || filterChanged) {
         renderProofGrid(true);
         proofRenderedOnce = true;
+      } else {
+        renderCarouselSlide(1);
       }
 
       proofVaultModal.classList.remove('hidden');
       proofVaultModal.scrollTop = 0;
       document.body.style.overflow = 'hidden';
+      syncCarouselAutoplay();
 
       if (proofVaultClose && typeof proofVaultClose.focus === 'function') {
         window.setTimeout(() => {
@@ -587,10 +811,13 @@
     };
 
     const closeProofVault = () => {
+      stopCarouselAutoplay();
       if (!proofVaultModal) return;
       proofVaultModal.classList.add('hidden');
       document.body.style.overflow = '';
     };
+
+    vaultCloseFn = closeProofVault;
 
     updateFilterCounts();
 
@@ -609,6 +836,36 @@
       });
     }
 
+    if (carouselPrev) carouselPrev.addEventListener('click', () => stepCarousel(-1, false));
+    if (carouselNext) carouselNext.addEventListener('click', () => stepCarousel(1, false));
+    if (carouselMediaBtn) {
+      carouselMediaBtn.addEventListener('click', () => {
+        if (carouselSwipeGuard.wasRecentSwipe()) return;
+        const item = filteredList[carouselIndex];
+        if (item) openLightbox(item, filteredList, carouselIndex);
+      });
+    }
+    if (carouselAutoBtn) {
+      carouselAutoBtn.addEventListener('click', () => {
+        carouselAutoEnabled = !carouselAutoEnabled;
+        syncCarouselAutoplay();
+      });
+    }
+
+    carouselSwipeGuard = bindSwipeGesture(
+      carouselViewport,
+      () => stepCarousel(1, false),
+      () => stepCarousel(-1, false),
+      () => {
+        carouselTouching = true;
+        stopCarouselAutoplay();
+      },
+      () => {
+        carouselTouching = false;
+        syncCarouselAutoplay();
+      }
+    );
+
     if (filterBar) {
       filterBar.querySelectorAll('[data-proof-filter]').forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -618,23 +875,48 @@
           syncFilterButtons(activeFilter);
           renderProofGrid(true);
           proofRenderedOnce = true;
+          syncCarouselAutoplay();
         });
       });
     }
 
-    // Lightbox controls
+    // Lightbox controls + Android swipe + Auto-Swipe
     const lbModal = document.getElementById('lightbox-modal');
     const lbClose = document.getElementById('lightbox-close');
     const lbPrev = document.getElementById('lightbox-prev');
     const lbNext = document.getElementById('lightbox-next');
+    const lbAutoBtn = document.getElementById('lightbox-autoplay');
+    const lbSwipeZone = document.getElementById('lightbox-swipe-zone');
+
     if (lbClose) lbClose.addEventListener('click', closeLightbox);
-    if (lbPrev) lbPrev.addEventListener('click', () => stepLightbox(-1));
-    if (lbNext) lbNext.addEventListener('click', () => stepLightbox(1));
+    if (lbPrev) lbPrev.addEventListener('click', () => stepLightbox(-1, false));
+    if (lbNext) lbNext.addEventListener('click', () => stepLightbox(1, false));
+    if (lbAutoBtn) {
+      lbAutoBtn.addEventListener('click', () => {
+        lightboxAutoplayEnabled = !lightboxAutoplayEnabled;
+        updateLightboxAutoplayUI();
+        resetLightboxAutoplay();
+      });
+    }
     if (lbModal) {
       lbModal.addEventListener('click', (e) => {
         if (e.target === lbModal) closeLightbox();
       });
     }
+
+    bindSwipeGesture(
+      lbSwipeZone,
+      () => stepLightbox(1, false),
+      () => stepLightbox(-1, false),
+      () => {
+        lightboxTouching = true;
+        stopLightboxAutoplay();
+      },
+      () => {
+        lightboxTouching = false;
+        resetLightboxAutoplay();
+      }
+    );
   }
 
   // --------------------------------------------------------------------------
@@ -866,8 +1148,6 @@
       const channelAnchors = [
         document.getElementById('header-cta-unlocked'),
         document.getElementById('mobile-cta-unlocked'),
-        document.getElementById('hero-tg-locked'),
-        document.getElementById('hero-tg-unlocked'),
         document.getElementById('footer-tg-unlocked'),
       ];
 
@@ -892,7 +1172,6 @@
 
       togglePair('header-cta-locked', 'header-cta-unlocked');
       togglePair('mobile-cta-locked', 'mobile-cta-unlocked');
-      togglePair('hero-tg-locked', 'hero-tg-unlocked');
       togglePair('footer-tg-locked', 'footer-tg-unlocked');
 
       const heroStatus = document.getElementById('hero-status-text');
@@ -1231,14 +1510,13 @@
           closeLightbox();
         } else if (prOpen) {
           hidePrivacy();
-        } else if (pvOpen && pvModal) {
-          pvModal.classList.add('hidden');
-          document.body.style.overflow = '';
+        } else if (pvOpen && vaultCloseFn) {
+          vaultCloseFn();
         }
       } else if (lbOpen && e.key === 'ArrowLeft') {
-        stepLightbox(-1);
+        stepLightbox(-1, false);
       } else if (lbOpen && e.key === 'ArrowRight') {
-        stepLightbox(1);
+        stepLightbox(1, false);
       }
     });
 
