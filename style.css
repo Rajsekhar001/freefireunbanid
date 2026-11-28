@@ -66,6 +66,14 @@ a {
   text-decoration: none;
 }
 
+a,
+button,
+label,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
 button,
 input {
   font: inherit;
@@ -106,6 +114,10 @@ label:focus-visible {
   .container {
     padding: 0 1.5rem;
   }
+}
+
+section[id] {
+  scroll-margin-top: 76px;
 }
 
 /* ---------- Fullscreen Background Video & Particles ---------- */
@@ -266,6 +278,9 @@ label:focus-visible {
   height: 80px;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.12);
+  object-fit: contain;
+  flex-shrink: 0;
+  background: #080910;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
 }
 
@@ -352,23 +367,28 @@ label:focus-visible {
   align-items: center;
   gap: 0.75rem;
   white-space: nowrap;
-  flex-shrink: 0;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 .brand-logo {
   width: 34px;
   height: 34px;
   border-radius: 9px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  object-fit: contain;
+  flex-shrink: 0;
+  background: #080910;
 }
 
 .brand-title {
   font-family: var(--font-display);
-  font-size: 1.32rem;
+  font-size: clamp(1.05rem, 4.2vw, 1.32rem);
   font-weight: 800;
   letter-spacing: 0.04em;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .nav-links {
@@ -1280,7 +1300,7 @@ main {
 .proof-carousel-media-btn img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
@@ -1516,7 +1536,7 @@ main {
 .proof-img-btn video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
   transition: transform 0.45s var(--ease-out);
 }
@@ -2326,6 +2346,9 @@ main {
   height: 38px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.14);
+  object-fit: contain;
+  flex-shrink: 0;
+  background: #080910;
 }
 
 .footer-brand h2 {
@@ -2535,6 +2558,334 @@ main {
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ---------- Android App-Style Bottom Navigation & Mobile Mapping ---------- */
+.android-bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 45;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(8, 9, 16, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 0.35rem 0.35rem calc(0.45rem + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.55);
+}
+
+@media (min-width: 768px) {
+  .android-bottom-nav {
+    display: none;
+  }
+}
+
+.android-nav-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  min-height: 48px;
+  padding: 0.35rem 0.25rem;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: color 0.16s, background-color 0.16s, transform 0.14s;
+}
+
+.android-nav-item:active {
+  transform: scale(0.94);
+}
+
+.android-nav-item.is-active {
+  color: var(--text-white);
+  background: linear-gradient(135deg, rgba(255, 23, 68, 0.2), rgba(0, 102, 255, 0.22));
+}
+
+.android-nav-item.is-active svg {
+  color: var(--blue-soft);
+}
+
+@media (max-width: 767px) {
+  .site-header {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .header-row {
+    gap: 0.75rem;
+    padding-top: 0.72rem;
+    padding-bottom: 0.72rem;
+  }
+
+  .site-footer {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .unlock-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 639px) {
+  .hero-section {
+    padding: 1.75rem 0 2.5rem;
+  }
+
+  .hero-grid {
+    gap: 1.65rem;
+  }
+
+  .hero-kicker {
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+  }
+
+  .hero-headline {
+    margin-top: 0.65rem;
+    font-size: clamp(2.25rem, 9.5vw, 2.85rem);
+  }
+
+  .hero-tagline {
+    margin-top: 0.65rem;
+    font-size: 1.12rem;
+  }
+
+  .hero-desc {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.58;
+  }
+
+  .hero-ctas {
+    margin-top: 1.35rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .hero-ctas .btn {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.7rem 0.65rem;
+    font-size: 0.76rem;
+    letter-spacing: 0.05em;
+    gap: 0.42rem;
+  }
+
+  .hero-meta {
+    margin-top: 1.15rem;
+    gap: 0.35rem 0.6rem;
+    font-size: 0.72rem;
+  }
+
+  .banner-caption-bar {
+    left: 0.7rem;
+    right: 0.7rem;
+    bottom: 0.6rem;
+  }
+
+  .banner-cat {
+    font-size: 0.68rem;
+  }
+
+  .banner-title {
+    font-size: 1rem;
+  }
+
+  .expand-btn {
+    top: 0.55rem;
+    right: 0.55rem;
+    width: 36px;
+    height: 36px;
+  }
+
+  .section-block {
+    padding: 2.75rem 0;
+  }
+
+  .section-title {
+    font-size: clamp(1.72rem, 7vw, 2.1rem);
+  }
+
+  .steps-strip {
+    margin-top: 1.35rem;
+    gap: 0.55rem;
+  }
+
+  .steps-strip .step-pill:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .verify-layout {
+    margin-top: 1.35rem;
+    gap: 1.25rem;
+  }
+
+  .verify-left {
+    gap: 1.15rem;
+  }
+
+  .verify-card,
+  .unlock-panel {
+    padding: 1.15rem;
+  }
+
+  .step1-row .btn,
+  .browse-label {
+    width: 100%;
+  }
+
+  .upload-locked-box,
+  .dropzone {
+    padding: 1.65rem 1rem;
+  }
+
+  .analytics-grid {
+    margin-top: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .metric-card {
+    padding: 1rem;
+  }
+
+  .metric-value {
+    margin-top: 0.65rem;
+    font-size: 1.7rem;
+  }
+
+  .metric-label {
+    font-size: 1.05rem;
+  }
+
+  .metric-sub {
+    font-size: 0.7rem;
+  }
+
+  .experience-grid {
+    margin-top: 1.5rem;
+    gap: 0.85rem;
+  }
+
+  .experience-card {
+    padding: 1.15rem;
+  }
+
+  .manifesto-card {
+    margin-top: 1.35rem;
+    padding: 1.35rem 1.1rem;
+  }
+
+  /* Proof Vault & Lightbox compact Android mapping */
+  .proof-vault-topbar-row {
+    gap: 0.65rem;
+    padding-top: 0.72rem;
+    padding-bottom: 0.72rem;
+  }
+
+  .proof-vault-topbar-left {
+    gap: 0.65rem;
+  }
+
+  .proof-back-btn {
+    padding: 0.45rem 0.72rem;
+    font-size: 0.72rem;
+  }
+
+  .proof-vault-modal-title {
+    font-size: 1.2rem;
+  }
+
+  .proof-summary-badge {
+    display: none;
+  }
+
+  .proof-vault-body {
+    padding-top: 1rem;
+    padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .proof-explainer-card {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .proof-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .proof-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .proof-filter-btn {
+    flex-shrink: 0;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.74rem;
+  }
+
+  .proof-carousel-shell {
+    padding: 0.75rem;
+  }
+
+  .proof-carousel-media-btn {
+    max-width: 300px;
+    max-height: 360px;
+    margin: 0 auto;
+  }
+
+  .proof-carousel-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .carousel-nav-btn {
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .modal-backdrop {
+    padding: 0.6rem;
+  }
+
+  .modal-card {
+    padding: 0.75rem;
+    max-height: 94vh;
+  }
+
+  .modal-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    padding-bottom: 0.65rem;
+  }
+
+  .modal-head-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .lightbox-img-box img,
+  .lightbox-img-box video {
+    max-height: 62vh;
+  }
 }
 
 /* ---------- Reduced Motion Accessibility ---------- */

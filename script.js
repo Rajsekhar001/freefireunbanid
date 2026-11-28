@@ -322,6 +322,8 @@
   let lightboxTouching = false;
   let vaultCarouselSyncFn = null;
   let vaultCloseFn = null;
+  let syncBottomNavFn = null;
+  let restoreBottomNavFn = null;
 
   function triggerSwipeAnimation(el, direction) {
     if (!el || prefersReducedMotion) return;
@@ -797,6 +799,7 @@
       proofVaultModal.classList.remove('hidden');
       proofVaultModal.scrollTop = 0;
       document.body.style.overflow = 'hidden';
+      if (syncBottomNavFn) syncBottomNavFn('proofs');
       syncCarouselAutoplay();
 
       if (proofVaultClose && typeof proofVaultClose.focus === 'function') {
@@ -815,6 +818,7 @@
       if (!proofVaultModal) return;
       proofVaultModal.classList.add('hidden');
       document.body.style.overflow = '';
+      if (restoreBottomNavFn) restoreBottomNavFn();
     };
 
     vaultCloseFn = closeProofVault;
@@ -1537,6 +1541,67 @@
         { threshold: 0.12 }
       );
       revealEls.forEach((el) => observer.observe(el));
+    }
+
+    // Android Bottom Navigation Active Sync
+    const bottomNavItems = Array.from(document.querySelectorAll('.android-bottom-nav [data-bottom-nav]'));
+    if (bottomNavItems.length) {
+      const setBottomNavActive = (key) => {
+        bottomNavItems.forEach((item) => {
+          const active = item.getAttribute('data-bottom-nav') === key;
+          item.classList.toggle('is-active', active);
+          if (active) {
+            item.setAttribute('aria-current', 'page');
+          } else {
+            item.removeAttribute('aria-current');
+          }
+        });
+      };
+
+      const detectVisibleSectionKey = () => {
+        const probeY = window.scrollY + Math.round(window.innerHeight * 0.35);
+        const expEl = document.getElementById('experience');
+        const verifyEl = document.getElementById('verification');
+        if (expEl && probeY >= expEl.offsetTop) return 'experience';
+        if (verifyEl && probeY >= verifyEl.offsetTop) return 'verification';
+        return 'hero';
+      };
+
+      syncBottomNavFn = setBottomNavActive;
+      restoreBottomNavFn = () => {
+        setBottomNavActive(detectVisibleSectionKey());
+      };
+
+      bottomNavItems.forEach((item) => {
+        item.addEventListener('click', () => {
+          const targetKey = item.getAttribute('data-bottom-nav');
+          if (targetKey) setBottomNavActive(targetKey);
+        });
+      });
+
+      document.querySelectorAll('[data-scroll-verify]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          setBottomNavActive('verification');
+        });
+      });
+
+      let scrollTicking = false;
+      window.addEventListener(
+        'scroll',
+        () => {
+          if (scrollTicking) return;
+          scrollTicking = true;
+          window.requestAnimationFrame(() => {
+            scrollTicking = false;
+            const pv = document.getElementById('proof-vault-modal');
+            if (pv && !pv.classList.contains('hidden')) return;
+            setBottomNavActive(detectVisibleSectionKey());
+          });
+        },
+        { passive: true }
+      );
+
+      setBottomNavActive(detectVisibleSectionKey());
     }
   }
 
