@@ -15,31 +15,21 @@ window.APEX_CONFIG = {
   instagramHandle: '@apex.carnage.live',
   instagramUrl: 'https://www.instagram.com/apex.carnage.live/',
 
-  // Official Telegram bot link — strictly unlocked only after Instagram follow + screenshot verification
-  telegramHandle: '@Apex_unban_bot',
+  // Official Telegram bot target — never printed as text on the page, unlocked only after Step 1 follow + screenshot verification
   telegramUrl: 'https://t.me/Apex_unban_bot',
 
   logoSrc: './assets/icons/apex-logo.svg',
 
-  // Your uploaded community artwork stored in assets/images/
+  // Official community artwork stored in assets/images/ (100% Free Service)
   showcaseAssets: [
     {
       id: 'unban-bot-hero',
-      title: 'Free Fire Unban Bot Thumbnail',
+      title: 'Free Fire Unban Bot — 100% Free Service',
       caption:
-        'Official APEX ID UNBAN BOT community portal banner featuring before-and-after account status showcase.',
-      category: 'Official Thumbnail',
+        'Official APEX ID UNBAN BOT community portal banner showcasing our 100% free service and verified community reward access.',
+      category: '100% Free Official Thumbnail',
       src: './assets/images/free-fire-unban-bot.png',
-      alt: 'APEX ID UNBAN BOT Free Fire Free Service and Unban Success thumbnail',
-    },
-    {
-      id: 'unban-proof-showcase',
-      title: 'Banned ID Proof & Bot Showcase',
-      caption:
-        'Community proof overview highlighting Free & Paid service tiers and instant Telegram bot access flow.',
-      category: 'Community Proof',
-      src: './assets/images/banned-id-proof.jpg',
-      alt: 'APEX ID UNBAN BOT Banned ID Proof and Free & Paid Unban Bot overview',
+      alt: 'APEX ID UNBAN BOT Free Fire 100% Free Service and Unban Success thumbnail',
     },
   ],
 

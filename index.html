@@ -47,6 +47,26 @@
       </div>
     </div>
 
+    <!-- Fullscreen Background Video -->
+    <div class="bg-video-wrap" aria-hidden="true">
+      <video
+        id="bg-video"
+        class="bg-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+      >
+        <source
+          src="./assets/aistudio/From_Klickpin.com-_Pin_these_fresh_ways_to_style_your_herb_garden_that_help_you_get_the_look_without_the_stress_for_a_stylish_result_that_still_fe_9aec6602.mp4"
+          type="video/mp4"
+        />
+        <source src="./assets/videos/apex-bg.mp4" type="video/mp4" />
+      </video>
+      <div class="bg-video-overlay"></div>
+    </div>
+
     <!-- Animated Background Particles -->
     <canvas id="particle-canvas" aria-hidden="true"></canvas>
 
@@ -81,7 +101,7 @@
             rel="noopener noreferrer"
             data-telegram-track
           >
-            Open Telegram
+            Join Now
           </a>
 
           <button
@@ -114,7 +134,7 @@
             rel="noopener noreferrer"
             data-telegram-track
           >
-            Open Telegram
+            Join Now
           </a>
         </nav>
       </div>
@@ -166,7 +186,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
                 </svg>
-                <span>OPEN TELEGRAM BOT</span>
+                <span>JOIN NOW — LINK READY</span>
               </a>
             </div>
 
@@ -202,10 +222,10 @@
                 </button>
                 <div class="banner-caption-bar">
                   <div>
-                    <p id="hero-banner-cat" class="banner-cat">Official Thumbnail</p>
-                    <p id="hero-banner-title" class="banner-title">Free Fire Unban Bot Thumbnail</p>
+                    <p id="hero-banner-cat" class="banner-cat">100% Free Official Thumbnail</p>
+                    <p id="hero-banner-title" class="banner-title">Free Fire Unban Bot — 100% Free Service</p>
                   </div>
-                  <div id="hero-slide-switcher" class="slide-switcher" role="tablist" aria-label="Select preview banner"></div>
+                  <div id="hero-slide-switcher" class="slide-switcher hidden" role="tablist" aria-label="Select preview banner"></div>
                 </div>
               </div>
             </div>
@@ -218,11 +238,11 @@
         <div class="container">
           <div class="section-header">
             <div>
-              <p class="section-kicker kicker-blue">01 · Visual Showcase</p>
-              <h2 class="section-title">Community Highlights &amp; Bot Previews</h2>
+              <p class="section-kicker kicker-blue">01 · Official Visual Preview</p>
+              <h2 class="section-title">100% Free Bot Community Banner</h2>
             </div>
             <p class="section-subtitle">
-              Official artwork and community service previews from APEX CARNAGE LIVE. Click any banner to inspect full detail.
+              Official APEX CARNAGE LIVE Free Fire Unban Bot artwork. Click the banner to inspect full detail.
             </p>
           </div>
           <div id="showcase-grid" class="showcase-grid"></div>
@@ -234,11 +254,11 @@
         <div class="container">
           <div class="section-header">
             <div>
-              <p class="section-kicker kicker-red">02 · Community Access Gate</p>
-              <h2 class="section-title">Instagram Verification &amp; Telegram Unlock</h2>
+              <p class="section-kicker kicker-red">02 · Instagram Follow Reward</p>
+              <h2 class="section-title">Verify Follow &amp; Claim Telegram Bot Reward</h2>
             </div>
             <p class="section-subtitle">
-              Follow @apex.carnage.live and verify your screenshot locally in your browser to unlock the Telegram bot link.
+              Follow @apex.carnage.live and verify your screenshot locally to receive the official Telegram bot link as your community reward.
             </p>
           </div>
 
@@ -247,7 +267,7 @@
             <div class="step-pill" data-step="2"><span class="step-num">02</span><p class="step-label">Upload Screenshot</p></div>
             <div class="step-pill" data-step="3"><span class="step-num">03</span><p class="step-label">Preview Image</p></div>
             <div class="step-pill" data-step="4"><span class="step-num">04</span><p class="step-label">Confirm Follow</p></div>
-            <div class="step-pill" data-step="5"><span class="step-num">05</span><p class="step-label">Unlock Telegram</p></div>
+            <div class="step-pill" data-step="5"><span class="step-num">05</span><p class="step-label">Join Now</p></div>
           </div>
 
           <div class="verify-layout">
@@ -283,8 +303,8 @@
                 </p>
               </div>
 
-              <!-- Step 2 & 3 -->
-              <div class="apex-glass verify-card reveal">
+              <!-- Step 2 & 3 (Locked until Step 1 Instagram link is clicked) -->
+              <div id="upload-card" class="apex-glass verify-card reveal">
                 <div class="upload-header">
                   <div>
                     <p class="card-kicker">STEP 02 &amp; 03 · LOCAL UPLOAD &amp; PREVIEW</p>
@@ -299,10 +319,24 @@
                   type="file"
                   id="screenshot-input"
                   accept="image/*"
+                  disabled
                   class="sr-only"
                 />
 
-                <div id="dropzone" class="dropzone">
+                <!-- Locked Gate before Instagram Follow click -->
+                <div id="upload-locked-notice" class="upload-locked-box">
+                  <div class="dropzone-icon" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                  </div>
+                  <p class="dropzone-title">Screenshot Upload Locked</p>
+                  <p class="dropzone-sub">
+                    First click <strong>Follow Instagram</strong> in Step 1 above — then the screenshot upload option will unlock here.
+                  </p>
+                </div>
+
+                <div id="dropzone" class="dropzone hidden">
                   <div class="dropzone-icon" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" />
@@ -366,7 +400,7 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                       <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 9.9-1" />
                     </svg>
-                    <span>Verify &amp; Unlock Telegram Link</span>
+                    <span>Verify Screenshot</span>
                   </button>
                 </div>
               </div>
@@ -376,7 +410,7 @@
             <div class="verify-right">
               <div class="apex-glass apex-gradient-border unlock-panel">
                 <div>
-                  <p class="card-kicker">STEP 05 · ACCESS STATUS</p>
+                  <p class="card-kicker">STEP 05 · FREE ID UNBAN ACCESS</p>
 
                   <!-- Locked State -->
                   <div id="state-locked">
@@ -385,9 +419,9 @@
                         <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
                       </svg>
                     </div>
-                    <h3 class="unlock-title">Telegram Link Locked</h3>
+                    <h3 class="unlock-title">Access Locked</h3>
                     <p class="card-text">
-                      Complete Steps 1 through 4 on the left to unlock instant access to the official Telegram bot link.
+                      First click Follow Instagram, then upload and verify your follow screenshot to unlock your free ID unban access.
                     </p>
                     <div class="checklist-summary">
                       <div class="checklist-row">
@@ -395,39 +429,31 @@
                         <span id="status-step1" class="checklist-val">Pending</span>
                       </div>
                       <div class="checklist-row">
-                        <span>2. Screenshot Validated</span>
-                        <span id="status-step2" class="checklist-val">Waiting</span>
+                        <span>2. Screenshot Uploaded</span>
+                        <span id="status-step2" class="checklist-val">Locked</span>
                       </div>
                       <div class="checklist-row">
-                        <span>3. User Confirmed</span>
+                        <span>3. Screenshot Verified</span>
                         <span id="status-step3" class="checklist-val">Pending</span>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Unlocked State (Bot URL injected dynamically ONLY when unlocked) -->
+                  <!-- Unlocked State (Never prints bot username or URL text on screen) -->
                   <div id="state-unlocked" class="hidden">
                     <div class="status-badge-icon status-badge-icon--unlocked" aria-hidden="true">
                       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><path d="M22 4L12 14.01l-3-3" />
                       </svg>
                     </div>
-                    <h3 class="unlock-title">Telegram Access Unlocked</h3>
+                    <h3 class="unlock-title">Your Free ID Unban Link Is Ready!</h3>
                     <p class="card-text">
-                      Your local confirmation is saved on this browser. You can now open the official APEX CARNAGE LIVE Telegram bot below.
+                      Instagram follow verified! Tap the Join Now button below to enter directly and get your free ID unban.
                     </p>
 
                     <div id="confirmed-file-box" class="confirmed-file-box hidden">
-                      <strong style="color: #fff;">Confirmed Local Screenshot</strong>
+                      <strong style="color: #fff;">Verified Follow Screenshot</strong>
                       <p id="confirmed-file-meta" style="margin: 0.25rem 0 0; color: var(--text-muted);"></p>
-                    </div>
-
-                    <div class="bot-link-card">
-                      <div class="bot-link-meta">
-                        <p class="bot-link-label">Official Bot Link</p>
-                        <p id="unlocked-bot-url" class="bot-link-url"></p>
-                      </div>
-                      <button type="button" id="copy-bot-btn" class="copy-btn">Copy</button>
                     </div>
 
                     <a
@@ -436,12 +462,12 @@
                       rel="noopener noreferrer"
                       data-telegram-track
                       class="btn btn-gradient-blue neon-blue-glow btn-full"
-                      style="margin-top: 1rem;"
+                      style="margin-top: 1.5rem;"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
                       </svg>
-                      <span id="unlocked-bot-cta-label">OPEN TELEGRAM BOT</span>
+                      <span id="unlocked-bot-cta-label">JOIN NOW</span>
                     </a>
                   </div>
                 </div>
@@ -560,7 +586,7 @@
                   data-telegram-track
                   class="footer-link hidden"
                 >
-                  Telegram: @Apex_unban_bot
+                  Telegram: Join Now (Link Ready)
                 </a>
               </li>
             </ul>
@@ -584,86 +610,6 @@
         </div>
       </div>
     </footer>
-
-    <!-- Floating APEX PHONK MODE Audio Player -->
-    <aside class="phonk-player" aria-label="APEX PHONK MODE audio player">
-      <div class="apex-glass apex-gradient-border phonk-shell">
-        <div class="phonk-row">
-          <button
-            type="button"
-            id="phonk-play-btn"
-            class="phonk-play-btn neon-red-glow"
-            aria-label="Play APEX PHONK MODE"
-          >
-            <svg id="phonk-icon-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <polygon points="6,4 20,12 6,20" />
-            </svg>
-            <svg id="phonk-icon-pause" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" />
-            </svg>
-          </button>
-
-          <div class="phonk-meta">
-            <p class="phonk-title">APEX PHONK MODE</p>
-            <div id="visualizer-bars" class="visualizer-bars" aria-hidden="true">
-              <span class="viz-bar"></span><span class="viz-bar"></span><span class="viz-bar"></span>
-              <span class="viz-bar"></span><span class="viz-bar"></span><span class="viz-bar"></span>
-              <span class="viz-bar"></span><span class="viz-bar"></span><span class="viz-bar"></span>
-              <span class="viz-bar"></span>
-            </div>
-          </div>
-
-          <button type="button" id="phonk-mute-btn" class="phonk-icon-btn" aria-label="Mute audio">
-            <svg id="phonk-icon-vol" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-            </svg>
-            <svg id="phonk-icon-muted" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff1744" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />
-            </svg>
-          </button>
-
-          <div class="phonk-vol-desktop">
-            <input
-              type="range"
-              id="phonk-volume-desktop"
-              class="phonk-slider"
-              min="0"
-              max="1"
-              step="0.01"
-              value="0.55"
-              aria-label="Phonk music volume"
-            />
-          </div>
-
-          <button
-            type="button"
-            id="phonk-expand-btn"
-            class="phonk-icon-btn phonk-expand-btn"
-            aria-expanded="false"
-            aria-label="Toggle volume slider"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="18 15 12 9 6 15" />
-            </svg>
-          </button>
-        </div>
-
-        <div id="phonk-mobile-drawer" class="phonk-mobile-drawer hidden">
-          <span>Volume</span>
-          <input
-            type="range"
-            id="phonk-volume-mobile"
-            class="phonk-slider"
-            min="0"
-            max="1"
-            step="0.01"
-            value="0.55"
-            aria-label="Phonk music volume mobile"
-          />
-          <span id="phonk-vol-pct" style="font-family: var(--font-mono);">55%</span>
-        </div>
-      </div>
-    </aside>
 
     <!-- Image Lightbox Modal -->
     <div id="lightbox-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="Image preview">
@@ -718,7 +664,7 @@
           <div>
             <h3>3. Browser Storage (localStorage &amp; sessionStorage)</h3>
             <p>
-              We use browser storage solely to remember whether you completed the local verification gate, save your APEX PHONK MODE audio preferences, and prevent duplicate visitor counts within the same tab session.
+              We use browser storage solely to remember whether you completed the local verification gate and prevent duplicate visitor counts within the same tab session.
             </p>
           </div>
           <div>

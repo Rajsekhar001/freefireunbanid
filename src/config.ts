@@ -40,18 +40,11 @@ export const COUNTER_API_CONFIG = {
 export const SHOWCASE_ASSETS: ShowcaseAsset[] = [
   {
     id: 'unban-bot-hero',
-    title: 'Free Fire Unban Bot Thumbnail',
-    caption: 'Official APEX ID UNBAN BOT community portal banner featuring before-and-after account status showcase.',
-    category: 'Official Thumbnail',
+    title: 'Free Fire Unban Bot — 100% Free Service',
+    caption:
+      'Official APEX ID UNBAN BOT community portal banner showcasing our 100% free service and verified community reward access.',
+    category: '100% Free Official Thumbnail',
     src: './assets/aistudio/Free_Fire_Unban_Bot_Success_31bdbe12.png',
-    alt: 'APEX ID UNBAN BOT Free Fire Free Service and Unban Success thumbnail',
-  },
-  {
-    id: 'unban-proof-showcase',
-    title: 'Banned ID Proof & Bot Showcase',
-    caption: 'Community proof overview highlighting Free & Paid service tiers and instant Telegram bot access flow.',
-    category: 'Community Proof',
-    src: './assets/aistudio/6075779673615964132_0763bd47.jpg',
-    alt: 'APEX ID UNBAN BOT Banned ID Proof and Free & Paid Unban Bot overview',
+    alt: 'APEX ID UNBAN BOT Free Fire 100% Free Service and Unban Success thumbnail',
   },
 ];

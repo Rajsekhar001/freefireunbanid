@@ -13,7 +13,8 @@ script.js
 assets/
   images/
     free-fire-unban-bot.png
-    banned-id-proof.jpg
+  videos/
+    apex-bg.mp4
   icons/
     apex-logo.svg
 README.md
@@ -29,7 +30,7 @@ LICENSE
 5. Select **Branch: `main`** and folder **`/ (root)`**, then click **Save**.
 6. Wait ~30–60 seconds and open your live free link: `https://<your-username>.github.io/<repo-name>/`.
 
-*(You do NOT need `npm install`, Node.js, or any paid plan — it works straight from the root files!)*
+*(You do NOT need `npm install`, Node.js, or any build step — it works straight from the root files on free GitHub Pages!)*
 
 ## Easy Editing (`config.js`)
 
