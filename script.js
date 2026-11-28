@@ -10,6 +10,7 @@
   const CONFIG = window.APEX_CONFIG || {
     instagramHandle: '@apex.carnage.live',
     instagramUrl: 'https://www.instagram.com/apex.carnage.live/',
+    telegramChannelUrl: 'https://t.me/+bmeECrH6ozc2YTA1',
     telegramUrl: 'https://t.me/Apex_unban_bot',
     showcaseAssets: [],
     analytics: {
@@ -152,19 +153,31 @@
     },
   };
 
+  const ANALYTICS_BASE = 500;
+
   function readLocalAnalytics() {
+    const defaults = {
+      visitors: ANALYTICS_BASE - 1,
+      telegramClicks: ANALYTICS_BASE,
+      instagramClicks: ANALYTICS_BASE,
+      screenshotAttempts: ANALYTICS_BASE,
+    };
     try {
       const raw = window.localStorage.getItem(STORAGE_KEYS.analytics);
-      if (!raw) return { visitors: 0, telegramClicks: 0, instagramClicks: 0, screenshotAttempts: 0 };
+      if (!raw) return defaults;
       const p = JSON.parse(raw);
+      const lift = (val, base) => {
+        if (!Number.isFinite(val) || val < 0) return base;
+        return val < base ? base + val : val;
+      };
       return {
-        visitors: Number.isFinite(p.visitors) ? p.visitors : 0,
-        telegramClicks: Number.isFinite(p.telegramClicks) ? p.telegramClicks : 0,
-        instagramClicks: Number.isFinite(p.instagramClicks) ? p.instagramClicks : 0,
-        screenshotAttempts: Number.isFinite(p.screenshotAttempts) ? p.screenshotAttempts : 0,
+        visitors: lift(p.visitors, ANALYTICS_BASE - 1),
+        telegramClicks: lift(p.telegramClicks, ANALYTICS_BASE),
+        instagramClicks: lift(p.instagramClicks, ANALYTICS_BASE),
+        screenshotAttempts: lift(p.screenshotAttempts, ANALYTICS_BASE),
       };
     } catch {
-      return { visitors: 0, telegramClicks: 0, instagramClicks: 0, screenshotAttempts: 0 };
+      return defaults;
     }
   }
 
@@ -214,10 +227,10 @@
           'Connected to CounterAPI v2 public workspace counters for live global visitor and click counts.';
       } else if (analyticsState.source === 'offline') {
         note.textContent =
-          'CounterAPI v2 is currently unreachable; displaying real counts recorded on this browser.';
+          'Live community traffic and click counters starting from 500 across visitors and portal actions.';
       } else {
         note.textContent =
-          'Displaying real counts recorded on this browser. Add your free CounterAPI v2 workspace slug in config.js for global counts across all visitors.';
+          'Live community traffic and click counters starting from 500 across visitors and portal actions.';
       }
     }
 
@@ -225,10 +238,12 @@
       const gVal = analyticsState.globalCounts[key];
       const lVal = analyticsState.localCounts[key];
       const showGlobal = isGlobal && gVal !== null;
+      const displayGlobal =
+        key === 'visitors' ? Math.max(ANALYTICS_BASE, ANALYTICS_BASE - 1 + gVal) : ANALYTICS_BASE + gVal;
       const valEl = document.querySelector('[data-metric-val="' + key + '"]');
       const scopeEl = document.querySelector('[data-metric-scope="' + key + '"]');
-      if (valEl) valEl.textContent = (showGlobal ? gVal : lVal).toLocaleString();
-      if (scopeEl) scopeEl.textContent = showGlobal ? 'Global' : 'This Browser';
+      if (valEl) valEl.textContent = (showGlobal ? displayGlobal : lVal).toLocaleString();
+      if (scopeEl) scopeEl.textContent = showGlobal ? 'Global' : 'Live';
     });
   }
 
@@ -243,13 +258,16 @@
     analyticsState.localCounts = readLocalAnalytics();
     if (!visitRecorded) {
       analyticsState.localCounts.visitors += 1;
-      writeLocalAnalytics(analyticsState.localCounts);
       try {
         window.sessionStorage.setItem(STORAGE_KEYS.sessionVisit, '1');
       } catch {
         // Ignore sessionStorage restrictions
       }
     }
+    if (analyticsState.localCounts.visitors < ANALYTICS_BASE) {
+      analyticsState.localCounts.visitors = ANALYTICS_BASE;
+    }
+    writeLocalAnalytics(analyticsState.localCounts);
 
     renderAnalytics();
 
@@ -294,120 +312,324 @@
   }
 
   // --------------------------------------------------------------------------
-  // 4. SHOWCASE, HERO SLIDER & LIGHTBOX
+  // 4. HERO BANNER, PROOF GALLERY (PHOTOS & VIDEOS) & LIGHTBOX
   // --------------------------------------------------------------------------
   let activeSlideIndex = 0;
+  let lightboxItems = [];
+  let lightboxIndex = 0;
 
-  function openLightbox(asset) {
+  function renderLightboxItem() {
+    const modal = document.getElementById('lightbox-modal');
+    const asset = lightboxItems[lightboxIndex];
+    if (!modal || !asset) return;
+
+    document.getElementById('lightbox-cat').textContent = asset.category || 'Proof';
+    document.getElementById('lightbox-title').textContent = asset.title || '';
+
+    const img = document.getElementById('lightbox-img');
+    const vid = document.getElementById('lightbox-video');
+    const isVideo = asset.type === 'video';
+
+    if (vid) {
+      vid.pause();
+      vid.removeAttribute('src');
+      vid.classList.toggle('hidden', !isVideo);
+    }
+    if (img) {
+      img.classList.toggle('hidden', isVideo);
+    }
+
+    if (isVideo && vid) {
+      vid.src = asset.src;
+      if (asset.poster) vid.poster = asset.poster;
+      vid.load();
+    } else if (img) {
+      img.src = asset.src;
+      img.alt = asset.alt || asset.title || 'Proof preview';
+    }
+
+    document.getElementById('lightbox-caption').textContent = asset.caption || '';
+
+    const hasMultiple = lightboxItems.length > 1;
+    const prevBtn = document.getElementById('lightbox-prev');
+    const nextBtn = document.getElementById('lightbox-next');
+    const counterEl = document.getElementById('lightbox-counter');
+    if (prevBtn) prevBtn.classList.toggle('hidden', !hasMultiple);
+    if (nextBtn) nextBtn.classList.toggle('hidden', !hasMultiple);
+    if (counterEl) {
+      counterEl.classList.toggle('hidden', !hasMultiple);
+      if (hasMultiple) {
+        counterEl.textContent =
+          String(lightboxIndex + 1).padStart(2, '0') +
+          ' / ' +
+          String(lightboxItems.length).padStart(2, '0');
+      }
+    }
+  }
+
+  function openLightbox(asset, list, index) {
     const modal = document.getElementById('lightbox-modal');
     if (!modal || !asset) return;
-    document.getElementById('lightbox-cat').textContent = asset.category;
-    document.getElementById('lightbox-title').textContent = asset.title;
-    const img = document.getElementById('lightbox-img');
-    img.src = asset.src;
-    img.alt = asset.alt;
-    document.getElementById('lightbox-caption').textContent = asset.caption;
+    lightboxItems = Array.isArray(list) && list.length ? list : [asset];
+    lightboxIndex = typeof index === 'number' && index >= 0 ? index : 0;
+    renderLightboxItem();
     modal.classList.remove('hidden');
+  }
+
+  function stepLightbox(delta) {
+    if (lightboxItems.length <= 1) return;
+    lightboxIndex = (lightboxIndex + delta + lightboxItems.length) % lightboxItems.length;
+    renderLightboxItem();
   }
 
   function closeLightbox() {
     const modal = document.getElementById('lightbox-modal');
+    const vid = document.getElementById('lightbox-video');
+    if (vid) {
+      vid.pause();
+      vid.currentTime = 0;
+    }
     if (modal) modal.classList.add('hidden');
   }
 
   function initShowcase() {
     const assets = CONFIG.showcaseAssets || [];
-    if (!assets.length) return;
-
     const heroImg = document.getElementById('hero-banner-img');
     const heroCat = document.getElementById('hero-banner-cat');
     const heroTitle = document.getElementById('hero-banner-title');
     const switcher = document.getElementById('hero-slide-switcher');
     const expandBtn = document.getElementById('hero-expand-btn');
 
-    const applySlide = (index) => {
-      activeSlideIndex = index;
-      const asset = assets[index] || assets[0];
-      if (heroImg) {
-        heroImg.src = asset.src;
-        heroImg.alt = asset.alt;
-      }
-      if (heroCat) heroCat.textContent = asset.category;
-      if (heroTitle) heroTitle.textContent = asset.title;
+    if (assets.length) {
+      const applySlide = (index) => {
+        activeSlideIndex = index;
+        const asset = assets[index] || assets[0];
+        if (heroImg) {
+          heroImg.src = asset.src;
+          heroImg.alt = asset.alt;
+        }
+        if (heroCat) heroCat.textContent = asset.category;
+        if (heroTitle) heroTitle.textContent = asset.title;
+        if (switcher) {
+          switcher.querySelectorAll('.slide-btn').forEach((btn, idx) => {
+            btn.classList.toggle('is-active', idx === index);
+            btn.setAttribute('aria-selected', idx === index ? 'true' : 'false');
+          });
+        }
+      };
+
       if (switcher) {
-        switcher.querySelectorAll('.slide-btn').forEach((btn, idx) => {
-          btn.classList.toggle('is-active', idx === index);
-          btn.setAttribute('aria-selected', idx === index ? 'true' : 'false');
+        switcher.innerHTML = '';
+        if (assets.length > 1) {
+          switcher.classList.remove('hidden');
+          assets.forEach((asset, index) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'slide-btn' + (index === 0 ? ' is-active' : '');
+            btn.textContent = '0' + (index + 1);
+            btn.setAttribute('role', 'tab');
+            btn.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+            btn.addEventListener('click', () => applySlide(index));
+            switcher.appendChild(btn);
+          });
+        } else {
+          switcher.classList.add('hidden');
+        }
+      }
+
+      applySlide(0);
+
+      if (expandBtn) {
+        expandBtn.addEventListener('click', () =>
+          openLightbox(assets[activeSlideIndex] || assets[0], assets, activeSlideIndex)
+        );
+      }
+    }
+
+    // Separate Proof Vault Overlay (Photos & Videos load only when clicked)
+    const proofVaultModal = document.getElementById('proof-vault-modal');
+    const proofVaultClose = document.getElementById('proof-vault-close');
+    const proofVaultCloseIcon = document.getElementById('proof-vault-close-icon');
+    const proofGrid = document.getElementById('proof-grid');
+    const filterBar = document.getElementById('proof-filters');
+    const summaryBadge = document.getElementById('proof-summary-badge');
+    const proofs = CONFIG.proofAssets || [];
+    let activeFilter = 'all';
+    let proofRenderedOnce = false;
+
+    const updateFilterCounts = () => {
+      const counts = { all: proofs.length, 'before-after': 0, 'multi-id': 0, reviews: 0 };
+      proofs.forEach((p) => {
+        if (p.group && Object.prototype.hasOwnProperty.call(counts, p.group)) {
+          counts[p.group] += 1;
+        }
+      });
+      Object.keys(counts).forEach((key) => {
+        document.querySelectorAll('[data-filter-count="' + key + '"]').forEach((el) => {
+          el.textContent = String(counts[key]);
         });
+      });
+    };
+
+    const syncFilterButtons = (selected) => {
+      if (!filterBar) return;
+      filterBar.querySelectorAll('[data-proof-filter]').forEach((b) => {
+        const active = (b.getAttribute('data-proof-filter') || 'all') === selected;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+    };
+
+    const renderProofGrid = (immediateReveal) => {
+      if (!proofGrid) return;
+      proofGrid.innerHTML = '';
+      const filtered =
+        activeFilter === 'all' ? proofs : proofs.filter((item) => item.group === activeFilter);
+
+      if (summaryBadge) {
+        summaryBadge.textContent =
+          'Showing ' + filtered.length + ' Verified Proof' + (filtered.length === 1 ? '' : 's');
+      }
+
+      if (!filtered.length) {
+        proofGrid.innerHTML =
+          '<div class="apex-glass apex-gradient-border proof-empty-card reveal is-visible">' +
+          '<div class="proof-empty-icon" aria-hidden="true">' +
+          '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+          '<rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" />' +
+          '</svg>' +
+          '</div>' +
+          '<h3 class="proof-empty-title">Proof Section Ready</h3>' +
+          '<p class="proof-empty-desc">' +
+          'Verified ID unban proof photos and videos will appear right here as soon as you share them.' +
+          '</p>' +
+          '</div>';
+        return;
+      }
+
+      filtered.forEach((item, idx) => {
+        const isVideo = item.type === 'video';
+        const article = document.createElement('article');
+        article.className =
+          'apex-glass apex-gradient-border proof-card reveal' +
+          (immediateReveal ? ' is-visible' : '');
+        const mediaHtml = isVideo
+          ? '<video src="' +
+            item.src +
+            '"' +
+            (item.poster ? ' poster="' + item.poster + '"' : '') +
+            ' muted playsinline preload="metadata"></video>'
+          : '<img src="' +
+            item.src +
+            '" alt="' +
+            (item.alt || item.title) +
+            '" loading="lazy" referrerpolicy="no-referrer" />';
+
+        const numLabel = String(idx + 1).padStart(2, '0');
+        article.innerHTML =
+          '<button type="button" class="proof-img-btn" aria-label="Open ' +
+          (isVideo ? 'video' : 'photo') +
+          ' proof: ' +
+          item.title +
+          '">' +
+          mediaHtml +
+          '<div class="banner-scrim" aria-hidden="true"></div>' +
+          '<span class="inspect-pill">' +
+          (isVideo ? 'Play Proof' : 'Inspect Proof') +
+          '</span>' +
+          '</button>' +
+          '<div class="showcase-body">' +
+          '<p class="showcase-meta">' +
+          numLabel +
+          ' · ' +
+          (item.category || (isVideo ? 'Video Proof' : 'Photo Proof')) +
+          '</p>' +
+          '<h3 class="showcase-title">' +
+          item.title +
+          '</h3>' +
+          '<p class="showcase-desc">' +
+          (item.caption || '') +
+          '</p>' +
+          '</div>';
+
+        article
+          .querySelector('.proof-img-btn')
+          .addEventListener('click', () => openLightbox(item, filtered, idx));
+        proofGrid.appendChild(article);
+      });
+    };
+
+    const openProofVault = (filter) => {
+      if (!proofVaultModal) return;
+      const nextFilter = filter || 'all';
+      const filterChanged = nextFilter !== activeFilter;
+      activeFilter = nextFilter;
+      syncFilterButtons(activeFilter);
+
+      if (!proofRenderedOnce || filterChanged) {
+        renderProofGrid(true);
+        proofRenderedOnce = true;
+      }
+
+      proofVaultModal.classList.remove('hidden');
+      proofVaultModal.scrollTop = 0;
+      document.body.style.overflow = 'hidden';
+
+      if (proofVaultClose && typeof proofVaultClose.focus === 'function') {
+        window.setTimeout(() => {
+          try {
+            proofVaultClose.focus({ preventScroll: true });
+          } catch {
+            // Ignore focus errors
+          }
+        }, 50);
       }
     };
 
-    if (switcher) {
-      switcher.innerHTML = '';
-      if (assets.length > 1) {
-        switcher.classList.remove('hidden');
-        assets.forEach((asset, index) => {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'slide-btn' + (index === 0 ? ' is-active' : '');
-          btn.textContent = '0' + (index + 1);
-          btn.setAttribute('role', 'tab');
-          btn.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
-          btn.addEventListener('click', () => applySlide(index));
-          switcher.appendChild(btn);
-        });
-      } else {
-        switcher.classList.add('hidden');
-      }
-    }
+    const closeProofVault = () => {
+      if (!proofVaultModal) return;
+      proofVaultModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    };
 
-    applySlide(0);
+    updateFilterCounts();
 
-    if (expandBtn) {
-      expandBtn.addEventListener('click', () => openLightbox(assets[activeSlideIndex] || assets[0]));
-    }
+    document.querySelectorAll('[data-open-proofs]').forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const filter = trigger.getAttribute('data-open-proofs') || 'all';
+        openProofVault(filter);
+      });
+    });
 
-    const grid = document.getElementById('showcase-grid');
-    if (grid) {
-      grid.innerHTML = '';
-      grid.classList.toggle('showcase-grid--single', assets.length === 1);
-      assets.forEach((asset, idx) => {
-        const article = document.createElement('article');
-        article.className = 'apex-glass apex-gradient-border showcase-card reveal';
-        article.innerHTML =
-          '<button type="button" class="showcase-img-btn" aria-label="Open full view of ' +
-          asset.title +
-          '">' +
-          '<img src="' +
-          asset.src +
-          '" alt="' +
-          asset.alt +
-          '" loading="lazy" referrerpolicy="no-referrer" />' +
-          '<div class="banner-scrim" aria-hidden="true"></div>' +
-          '<span class="inspect-pill">Inspect</span>' +
-          '</button>' +
-          '<div class="showcase-body">' +
-          '<p class="showcase-meta">0' +
-          (idx + 1) +
-          ' · ' +
-          asset.category +
-          '</p>' +
-          '<h3 class="showcase-title">' +
-          asset.title +
-          '</h3>' +
-          '<p class="showcase-desc">' +
-          asset.caption +
-          '</p>' +
-          '</div>';
-        article.querySelector('.showcase-img-btn').addEventListener('click', () => openLightbox(asset));
-        grid.appendChild(article);
+    if (proofVaultClose) proofVaultClose.addEventListener('click', closeProofVault);
+    if (proofVaultCloseIcon) proofVaultCloseIcon.addEventListener('click', closeProofVault);
+    if (proofVaultModal) {
+      proofVaultModal.addEventListener('click', (e) => {
+        if (e.target === proofVaultModal) closeProofVault();
       });
     }
 
-    // Lightbox close handlers
+    if (filterBar) {
+      filterBar.querySelectorAll('[data-proof-filter]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const nextFilter = btn.getAttribute('data-proof-filter') || 'all';
+          if (nextFilter === activeFilter && proofRenderedOnce) return;
+          activeFilter = nextFilter;
+          syncFilterButtons(activeFilter);
+          renderProofGrid(true);
+          proofRenderedOnce = true;
+        });
+      });
+    }
+
+    // Lightbox controls
     const lbModal = document.getElementById('lightbox-modal');
     const lbClose = document.getElementById('lightbox-close');
+    const lbPrev = document.getElementById('lightbox-prev');
+    const lbNext = document.getElementById('lightbox-next');
     if (lbClose) lbClose.addEventListener('click', closeLightbox);
+    if (lbPrev) lbPrev.addEventListener('click', () => stepLightbox(-1));
+    if (lbNext) lbNext.addEventListener('click', () => stepLightbox(1));
     if (lbModal) {
       lbModal.addEventListener('click', (e) => {
         if (e.target === lbModal) closeLightbox();
@@ -447,11 +669,17 @@
   function initVerification() {
     const state = loadVerification();
     let previewUrl = null;
+    let previewIsObjectUrl = false;
     let fileName = state.lastFileName;
     let dimensions = state.lastDimensions;
     let confirmed = false;
+    let isVerifying = false;
 
     const MAX_BYTES = 15 * 1024 * 1024;
+    const step1Card = document.getElementById('step1-card');
+    const uploadCard = document.getElementById('upload-card');
+    const step4Card = document.getElementById('step4-card');
+    const step5Card = document.getElementById('step5-card');
     const followBtn = document.getElementById('follow-instagram-btn');
     const footerIg = document.getElementById('footer-ig-link');
     const igNote = document.getElementById('ig-opened-note');
@@ -459,6 +687,7 @@
     const fileInput = document.getElementById('screenshot-input');
     const dropzone = document.getElementById('dropzone');
     const dropzoneTitle = document.getElementById('dropzone-title');
+    const browseLabel = dropzone ? dropzone.querySelector('.browse-label') : null;
     const previewBox = document.getElementById('preview-box');
     const previewImg = document.getElementById('preview-img');
     const previewFilename = document.getElementById('preview-filename');
@@ -469,6 +698,7 @@
     const confirmCheckbox = document.getElementById('confirm-checkbox');
     const step1Warning = document.getElementById('step1-warning');
     const unlockBtn = document.getElementById('unlock-btn');
+    const unlockBtnLabel = document.getElementById('unlock-btn-label');
     const stateLocked = document.getElementById('state-locked');
     const stateUnlocked = document.getElementById('state-unlocked');
     const confirmedFileBox = document.getElementById('confirmed-file-box');
@@ -478,13 +708,74 @@
     const resetWrap = document.getElementById('reset-wrap');
     const resetBtn = document.getElementById('reset-verify-btn');
 
+    const pulseElement = (el) => {
+      if (!el || prefersReducedMotion) return;
+      el.classList.remove('task-focus-pulse');
+      void el.offsetWidth;
+      el.classList.add('task-focus-pulse');
+    };
+
+    const scrollToTarget = (cardEl, focusEl) => {
+      if (!cardEl) return;
+      cardEl.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'center',
+      });
+      pulseElement(cardEl);
+      if (focusEl && typeof focusEl.focus === 'function') {
+        window.setTimeout(() => {
+          try {
+            focusEl.focus({ preventScroll: true });
+          } catch {
+            // Ignore focus restrictions
+          }
+        }, 280);
+      }
+    };
+
+    const showStepWarning = (msg) => {
+      if (!step1Warning) return;
+      if (!msg) {
+        step1Warning.classList.add('hidden');
+        step1Warning.textContent = '';
+      } else {
+        step1Warning.textContent = msg;
+        step1Warning.classList.remove('hidden');
+      }
+    };
+
+    const scrollToNextIncompleteTask = () => {
+      if (!state.instagramClicked) {
+        showStepWarning('Complete Step 1: Click "Follow Instagram" first.');
+        scrollToTarget(step1Card, followBtn);
+        return;
+      }
+      if (!previewUrl && !state.unlocked) {
+        showStepWarning('Complete Step 2: Select and upload your follow screenshot.');
+        scrollToTarget(uploadCard, browseLabel);
+        return;
+      }
+      if (!confirmed && !state.unlocked) {
+        showStepWarning('Please tick the confirmation checkbox above, then click Verify Screenshot.');
+        scrollToTarget(step4Card, confirmCheckbox);
+        pulseElement(confirmLabel);
+        return;
+      }
+      if (!state.unlocked) {
+        showStepWarning(null);
+        scrollToTarget(step4Card, unlockBtn);
+        return;
+      }
+      scrollToTarget(step5Card, unlockedBotCta);
+    };
+
     const syncUI = (animateUnlock, animateUploadOpen) => {
-      // Steps progress bar
+      const hasImage = Boolean(previewUrl);
       const activeStep = state.unlocked
         ? 5
-        : confirmed && previewUrl
+        : confirmed && hasImage
         ? 4
-        : previewUrl
+        : hasImage
         ? 3
         : state.instagramClicked
         ? 2
@@ -499,7 +790,6 @@
       if (igNote) igNote.classList.toggle('hidden', !state.instagramClicked);
 
       // Step 2 Gate: Screenshot upload opens ONLY after clicking Follow Instagram in Step 1
-      const hasImage = Boolean(previewUrl);
       if (fileInput) {
         fileInput.disabled = !state.instagramClicked;
       }
@@ -527,24 +817,37 @@
       const s2 = document.getElementById('status-step2');
       const s3 = document.getElementById('status-step3');
       if (s1) s1.textContent = state.instagramClicked ? 'Followed' : 'Pending';
-      if (s2) s2.textContent = hasImage ? 'Uploaded' : state.instagramClicked ? 'Open Now' : 'Locked';
-      if (s3) s3.textContent = state.unlocked ? 'Verified' : confirmed ? 'Confirmed' : 'Pending';
+      if (s2) {
+        s2.textContent = hasImage || state.unlocked ? 'Uploaded' : state.instagramClicked ? 'Open Now' : 'Locked';
+      }
+      if (s3) s3.textContent = state.unlocked ? 'Verified' : confirmed ? 'Ready' : 'Pending';
 
       // Confirmation checkbox state
+      const checkboxDisabled = !hasImage || !state.instagramClicked;
       if (confirmCheckbox) {
-        confirmCheckbox.disabled = !hasImage || !state.instagramClicked;
+        confirmCheckbox.disabled = checkboxDisabled;
         confirmCheckbox.checked = confirmed;
       }
       if (confirmLabel) {
-        confirmLabel.classList.toggle('is-disabled', !hasImage || !state.instagramClicked);
+        confirmLabel.classList.toggle('is-disabled', checkboxDisabled);
         confirmLabel.classList.toggle('is-checked', hasImage && confirmed);
-      }
-      if (step1Warning) {
-        step1Warning.classList.add('hidden');
       }
 
       const canUnlock = Boolean(state.instagramClicked && hasImage && confirmed);
-      if (unlockBtn) unlockBtn.disabled = !canUnlock;
+      if (canUnlock || state.unlocked) {
+        showStepWarning(null);
+      }
+      if (unlockBtn) {
+        unlockBtn.classList.toggle('is-locked-btn', !canUnlock && !isVerifying);
+        unlockBtn.setAttribute('aria-disabled', canUnlock && !isVerifying ? 'false' : 'true');
+      }
+      if (unlockBtnLabel) {
+        unlockBtnLabel.textContent = isVerifying
+          ? 'Verifying Screenshot...'
+          : state.unlocked
+          ? 'Screenshot Verified'
+          : 'Verify Screenshot';
+      }
 
       // Locked vs Unlocked view (Bot URL & handle are NEVER displayed as text anywhere)
       if (stateLocked) stateLocked.classList.toggle('hidden', state.unlocked);
@@ -558,23 +861,27 @@
       }
       if (resetWrap) resetWrap.classList.toggle('hidden', !state.unlocked);
 
-      // Populate href ONLY after verification is complete
-      const tgAnchors = [
+      // Join buttons link to the Telegram channel; Step 5 UNBAN YOUR ID button links to the bot ONLY after verification
+      const channelUrl = CONFIG.telegramChannelUrl || 'https://t.me/+bmeECrH6ozc2YTA1';
+      const channelAnchors = [
         document.getElementById('header-cta-unlocked'),
         document.getElementById('mobile-cta-unlocked'),
+        document.getElementById('hero-tg-locked'),
         document.getElementById('hero-tg-unlocked'),
         document.getElementById('footer-tg-unlocked'),
-        unlockedBotCta,
       ];
 
-      tgAnchors.forEach((a) => {
-        if (!a) return;
-        if (state.unlocked) {
-          a.href = CONFIG.telegramUrl;
-        } else {
-          a.removeAttribute('href');
-        }
+      channelAnchors.forEach((a) => {
+        if (a) a.href = channelUrl;
       });
+
+      if (unlockedBotCta) {
+        if (state.unlocked) {
+          unlockedBotCta.href = CONFIG.telegramUrl;
+        } else {
+          unlockedBotCta.removeAttribute('href');
+        }
+      }
 
       const togglePair = (lockedId, unlockedId) => {
         const l = document.getElementById(lockedId);
@@ -591,12 +898,12 @@
       const heroStatus = document.getElementById('hero-status-text');
       if (heroStatus) {
         heroStatus.textContent = state.unlocked
-          ? 'Your Free ID Unban Link Is Ready!'
-          : 'Follow & Verify to Unlock Link';
+          ? 'Verified · Tap Unban Your ID'
+          : 'Follow & Verify to Unlock';
       }
 
       if (state.unlocked) {
-        if (unlockedBotCtaLabel) unlockedBotCtaLabel.textContent = 'JOIN NOW';
+        if (unlockedBotCtaLabel) unlockedBotCtaLabel.textContent = 'UNBAN YOUR ID';
         if (confirmedFileBox && confirmedFileMeta && state.lastFileName) {
           confirmedFileBox.classList.remove('hidden');
           confirmedFileMeta.textContent =
@@ -618,65 +925,128 @@
       }
     };
 
-    const clearImage = () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    const revokePreview = () => {
+      if (previewUrl && previewIsObjectUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
       previewUrl = null;
+      previewIsObjectUrl = false;
+    };
+
+    const clearImage = () => {
+      revokePreview();
       fileName = null;
       dimensions = null;
       confirmed = false;
+      isVerifying = false;
       if (fileInput) fileInput.value = '';
       showUploadError(null);
+      showStepWarning(null);
       syncUI(false, false);
     };
 
+    const isLikelyImageFile = (file) => {
+      if (file.type && file.type.startsWith('image/')) return true;
+      return /\.(png|jpe?g|webp|gif|bmp|avif|heic|heif)$/i.test(file.name || '');
+    };
+
+    const commitLoadedImage = (srcUrl, isObjectUrl, file, width, height) => {
+      if (dropzoneTitle) {
+        dropzoneTitle.textContent = 'Drag & drop your screenshot here, or browse from device';
+      }
+      if (width < 100 || height < 100) {
+        if (isObjectUrl) URL.revokeObjectURL(srcUrl);
+        if (fileInput) fileInput.value = '';
+        showUploadError('Screenshot resolution is too small. Please upload a clear follow screenshot.');
+        return;
+      }
+
+      revokePreview();
+      previewUrl = srcUrl;
+      previewIsObjectUrl = isObjectUrl;
+      fileName = file.name || 'follow-screenshot.png';
+      dimensions = width + ' × ' + height + ' px';
+      confirmed = false;
+
+      if (previewImg) previewImg.src = previewUrl;
+      if (previewFilename) previewFilename.textContent = fileName;
+      if (previewDims) previewDims.textContent = dimensions;
+      if (dropzone) dropzone.classList.add('hidden');
+      if (previewBox) previewBox.classList.remove('hidden');
+      if (clearBtn) clearBtn.classList.remove('hidden');
+      syncUI(false, false);
+
+      window.setTimeout(() => {
+        scrollToTarget(step4Card, confirmCheckbox);
+      }, 220);
+    };
+
     const processFile = (file) => {
-      if (!state.instagramClicked) return;
+      if (!state.instagramClicked) {
+        scrollToNextIncompleteTask();
+        return;
+      }
       showUploadError(null);
       void trackEvent('screenshotAttempts');
 
-      if (!file.type || !file.type.startsWith('image/')) {
-        showUploadError('Please select a valid image file (PNG, JPG, WEBP, or GIF).');
+      if (!isLikelyImageFile(file)) {
+        if (fileInput) fileInput.value = '';
+        showUploadError('Please select a valid screenshot image (PNG, JPG, WEBP, or GIF).');
         return;
       }
-      if (file.size > MAX_BYTES) {
+      if (file.size <= 0 || file.size > MAX_BYTES) {
+        if (fileInput) fileInput.value = '';
         showUploadError('Image exceeds the 15 MB browser limit. Please upload a smaller screenshot.');
         return;
       }
 
-      if (dropzoneTitle) dropzoneTitle.textContent = 'Validating image locally...';
+      if (dropzoneTitle) dropzoneTitle.textContent = 'Reading screenshot locally...';
+
+      const loadViaDataUrlFallback = () => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const dataUrl = typeof reader.result === 'string' ? reader.result : '';
+          if (!dataUrl) {
+            if (dropzoneTitle) {
+              dropzoneTitle.textContent = 'Drag & drop your screenshot here, or browse from device';
+            }
+            if (fileInput) fileInput.value = '';
+            showUploadError('Could not read that image locally. Please try a PNG or JPG screenshot.');
+            return;
+          }
+          const imgFallback = new Image();
+          imgFallback.onload = () => {
+            commitLoadedImage(dataUrl, false, file, imgFallback.naturalWidth, imgFallback.naturalHeight);
+          };
+          imgFallback.onerror = () => {
+            if (dropzoneTitle) {
+              dropzoneTitle.textContent = 'Drag & drop your screenshot here, or browse from device';
+            }
+            if (fileInput) fileInput.value = '';
+            showUploadError('Unsupported screenshot format. Please choose a PNG or JPG screenshot.');
+          };
+          imgFallback.src = dataUrl;
+        };
+        reader.onerror = () => {
+          if (dropzoneTitle) {
+            dropzoneTitle.textContent = 'Drag & drop your screenshot here, or browse from device';
+          }
+          if (fileInput) fileInput.value = '';
+          showUploadError('Could not read that image locally. Please try a PNG or JPG screenshot.');
+        };
+        reader.readAsDataURL(file);
+      };
+
       const objectUrl = URL.createObjectURL(file);
       const probe = new Image();
 
       probe.onload = () => {
-        if (dropzoneTitle) {
-          dropzoneTitle.textContent = 'Drag & drop your screenshot here, or browse from device';
-        }
-        if (probe.naturalWidth < 80 || probe.naturalHeight < 80) {
-          URL.revokeObjectURL(objectUrl);
-          showUploadError('Screenshot resolution is too small. Please upload a clear follow screenshot.');
-          return;
-        }
-        if (previewUrl) URL.revokeObjectURL(previewUrl);
-        previewUrl = objectUrl;
-        fileName = file.name;
-        dimensions = probe.naturalWidth + ' × ' + probe.naturalHeight + ' px';
-        confirmed = false;
-
-        if (previewImg) previewImg.src = previewUrl;
-        if (previewFilename) previewFilename.textContent = fileName;
-        if (previewDims) previewDims.textContent = dimensions;
-        if (dropzone) dropzone.classList.add('hidden');
-        if (previewBox) previewBox.classList.remove('hidden');
-        if (clearBtn) clearBtn.classList.remove('hidden');
-        syncUI(false);
+        commitLoadedImage(objectUrl, true, file, probe.naturalWidth, probe.naturalHeight);
       };
 
       probe.onerror = () => {
         URL.revokeObjectURL(objectUrl);
-        if (dropzoneTitle) {
-          dropzoneTitle.textContent = 'Drag & drop your screenshot here, or browse from device';
-        }
-        showUploadError('Could not read that image locally. Please try a PNG or JPG screenshot.');
+        loadViaDataUrlFallback();
       };
 
       probe.src = objectUrl;
@@ -688,20 +1058,43 @@
       saveVerification(state);
       void trackEvent('instagramClicks');
       syncUI(false, !wasClicked);
+      window.setTimeout(() => {
+        scrollToTarget(uploadCard, browseLabel);
+      }, 180);
     };
 
     if (followBtn) followBtn.addEventListener('click', handleIgClick);
     if (footerIg) footerIg.addEventListener('click', handleIgClick);
 
+    if (uploadLockedNotice) {
+      uploadLockedNotice.addEventListener('click', () => {
+        scrollToNextIncompleteTask();
+      });
+    }
+
     if (fileInput) {
       fileInput.addEventListener('change', (e) => {
-        if (!state.instagramClicked) return;
+        if (!state.instagramClicked) {
+          scrollToNextIncompleteTask();
+          return;
+        }
         const file = e.target.files && e.target.files[0];
         if (file) processFile(file);
       });
     }
 
     if (dropzone) {
+      dropzone.addEventListener('click', (e) => {
+        if (!state.instagramClicked) {
+          e.preventDefault();
+          scrollToNextIncompleteTask();
+          return;
+        }
+        if (e.target && e.target.closest && e.target.closest('label')) {
+          return;
+        }
+        if (fileInput) fileInput.click();
+      });
       dropzone.addEventListener('dragover', (e) => {
         if (!state.instagramClicked) return;
         e.preventDefault();
@@ -709,7 +1102,11 @@
       });
       dropzone.addEventListener('dragleave', () => dropzone.classList.remove('is-dragging'));
       dropzone.addEventListener('drop', (e) => {
-        if (!state.instagramClicked) return;
+        if (!state.instagramClicked) {
+          e.preventDefault();
+          scrollToNextIncompleteTask();
+          return;
+        }
         e.preventDefault();
         dropzone.classList.remove('is-dragging');
         const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
@@ -718,6 +1115,15 @@
     }
 
     if (clearBtn) clearBtn.addEventListener('click', clearImage);
+
+    if (confirmLabel) {
+      confirmLabel.addEventListener('click', (e) => {
+        if (!state.instagramClicked || !previewUrl) {
+          e.preventDefault();
+          scrollToNextIncompleteTask();
+        }
+      });
+    }
 
     if (confirmCheckbox) {
       confirmCheckbox.addEventListener('change', (e) => {
@@ -728,14 +1134,24 @@
 
     if (unlockBtn) {
       unlockBtn.addEventListener('click', () => {
-        if (!state.instagramClicked || !previewUrl || !confirmed) return;
-        state.unlocked = true;
-        state.lastFileName = fileName;
-        state.lastDimensions = dimensions;
-        saveVerification(state);
-        syncUI(true, false);
-        const announce = document.getElementById('sr-announce');
-        if (announce) announce.textContent = 'Your Free ID Unban Link Is Ready! Tap Join Now.';
+        if (isVerifying) return;
+        if (!state.instagramClicked || !previewUrl || !confirmed) {
+          scrollToNextIncompleteTask();
+          return;
+        }
+        isVerifying = true;
+        syncUI(false, false);
+        window.setTimeout(() => {
+          isVerifying = false;
+          state.unlocked = true;
+          state.lastFileName = fileName;
+          state.lastDimensions = dimensions;
+          saveVerification(state);
+          syncUI(true, false);
+          scrollToTarget(step5Card, unlockedBotCta);
+          const announce = document.getElementById('sr-announce');
+          if (announce) announce.textContent = 'Your Free ID Unban Link Is Ready! Tap Unban Your ID.';
+        }, 550);
       });
     }
 
@@ -747,8 +1163,15 @@
         state.lastDimensions = null;
         saveVerification(state);
         clearImage();
+        scrollToTarget(step1Card, followBtn);
       });
     }
+
+    document.querySelectorAll('[data-scroll-verify]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        scrollToNextIncompleteTask();
+      });
+    });
 
     document.querySelectorAll('[data-telegram-track]').forEach((el) => {
       el.addEventListener('click', () => {
@@ -756,7 +1179,7 @@
       });
     });
 
-    syncUI(false);
+    syncUI(false, false);
   }
 
   // --------------------------------------------------------------------------
@@ -779,13 +1202,6 @@
       });
     }
 
-    document.querySelectorAll('[data-scroll-verify]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const target = document.getElementById('verification');
-        if (target) target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-      });
-    });
-
     const privacyModal = document.getElementById('privacy-modal');
     const openPrivacy = document.getElementById('open-privacy-btn');
     const closePrivacy = document.getElementById('privacy-close');
@@ -804,9 +1220,25 @@
     }
 
     window.addEventListener('keydown', (e) => {
+      const lbModal = document.getElementById('lightbox-modal');
+      const lbOpen = lbModal && !lbModal.classList.contains('hidden');
+      const pvModal = document.getElementById('proof-vault-modal');
+      const pvOpen = pvModal && !pvModal.classList.contains('hidden');
+      const prOpen = privacyModal && !privacyModal.classList.contains('hidden');
+
       if (e.key === 'Escape') {
-        closeLightbox();
-        hidePrivacy();
+        if (lbOpen) {
+          closeLightbox();
+        } else if (prOpen) {
+          hidePrivacy();
+        } else if (pvOpen && pvModal) {
+          pvModal.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      } else if (lbOpen && e.key === 'ArrowLeft') {
+        stepLightbox(-1);
+      } else if (lbOpen && e.key === 'ArrowRight') {
+        stepLightbox(1);
       }
     });
 

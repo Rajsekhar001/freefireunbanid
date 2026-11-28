@@ -85,7 +85,8 @@
 
         <nav class="nav-links" aria-label="Primary navigation">
           <a href="#hero" class="nav-link">Overview</a>
-          <a href="#showcase" class="nav-link">Showcase</a>
+          <button type="button" class="nav-link nav-link-btn" data-open-proofs="all">Proof</button>
+          <a href="#experience" class="nav-link">Experience</a>
           <a href="#verification" class="nav-link">Verify Access</a>
           <a href="#analytics" class="nav-link">Analytics</a>
         </nav>
@@ -121,7 +122,8 @@
       <div id="mobile-menu" class="mobile-menu hidden">
         <nav class="mobile-menu-nav" aria-label="Mobile navigation">
           <a href="#hero" class="mobile-menu-link">Overview</a>
-          <a href="#showcase" class="mobile-menu-link">Showcase</a>
+          <button type="button" class="mobile-menu-link mobile-menu-link-btn" data-open-proofs="all">Proof Gallery</button>
+          <a href="#experience" class="mobile-menu-link">Experience</a>
           <a href="#verification" class="mobile-menu-link">Verify Access</a>
           <a href="#analytics" class="mobile-menu-link">Analytics</a>
           <button type="button" id="mobile-cta-locked" class="mobile-menu-cta" data-scroll-verify>
@@ -150,15 +152,16 @@
         <div class="container hero-grid">
           <div class="hero-copy">
             <p class="hero-kicker">
-              APEX CARNAGE LIVE<span class="sep" aria-hidden="true">·</span>Community Access Portal
+              POWERED BY APEX CARNAGE LIVE<span class="sep" aria-hidden="true">·</span>Community Access Portal
             </p>
             <h1 class="hero-headline">
-              <span class="gradient-text">APEX ID UNBAN BOT</span>
+              <span class="gradient-text">WELCOME TO APEX ID UNBAN WEBSITE</span>
             </h1>
-            <p class="hero-tagline">“YOUR GAMING COMMUNITY. YOUR ACCESS. YOUR EXPERIENCE.”</p>
+            <p class="hero-tagline">YOUR ACCOUNT. YOUR JOURNEY. YOUR SECOND CHANCE.</p>
             <p class="hero-desc">
-              Welcome to APEX ID UNBAN BOT, the official community access portal of APEX CARNAGE LIVE.
-              Explore our gaming community, access available bot services and stay connected with the latest updates.
+              Welcome to <strong>APEX CARNAGE LIVE</strong>, your dedicated gaming community portal.
+              Experience a platform designed to bring gaming enthusiasts together with easy access to
+              available bot services, community updates, and support.
             </p>
 
             <div class="hero-ctas">
@@ -169,15 +172,23 @@
                 </svg>
               </button>
 
-              <button type="button" id="hero-tg-locked" class="btn btn-telegram neon-blue-glow" data-scroll-verify>
+              <a
+                id="hero-tg-locked"
+                href="https://t.me/+bmeECrH6ozc2YTA1"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-telegram-track
+                class="btn btn-telegram neon-blue-glow"
+              >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
                 </svg>
                 <span>JOIN TELEGRAM</span>
-              </button>
+              </a>
 
               <a
                 id="hero-tg-unlocked"
+                href="https://t.me/+bmeECrH6ozc2YTA1"
                 class="btn btn-telegram neon-blue-glow hidden"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -186,7 +197,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
                 </svg>
-                <span>JOIN NOW — LINK READY</span>
+                <span>JOIN NOW</span>
               </a>
             </div>
 
@@ -233,19 +244,112 @@
         </div>
       </section>
 
-      <!-- Visual Showcase Section -->
-      <section id="showcase" class="section-block">
+      <!-- Separate Verified Proof Vault Gateway (Photos stay hidden until user clicks) -->
+      <section id="proof" class="section-block">
+        <div class="container">
+          <div class="apex-glass apex-gradient-border proof-vault-card reveal">
+            <div class="proof-vault-info">
+              <p class="section-kicker kicker-blue">01 · Separate Community Proof Section</p>
+              <h2 class="section-title">COMMUNITY PROOF VAULT</h2>
+              <p class="proof-vault-desc">
+                All 31 verified Free Fire ID unban results from APEX CARNAGE LIVE members are kept in a separate Proof Vault so the main page stays clean. Click below whenever you want to inspect the proofs.
+              </p>
+
+              <div class="proof-vault-stats" aria-label="Proof breakdown">
+                <button type="button" class="proof-stat-chip" data-open-proofs="all">
+                  <span class="proof-stat-num" data-filter-count="all">31</span>
+                  <span class="proof-stat-label">All Proofs</span>
+                </button>
+                <button type="button" class="proof-stat-chip" data-open-proofs="before-after">
+                  <span class="proof-stat-num" data-filter-count="before-after">8</span>
+                  <span class="proof-stat-label">Before → After</span>
+                </button>
+                <button type="button" class="proof-stat-chip" data-open-proofs="multi-id">
+                  <span class="proof-stat-num" data-filter-count="multi-id">6</span>
+                  <span class="proof-stat-label">Multi-ID Unbans</span>
+                </button>
+                <button type="button" class="proof-stat-chip" data-open-proofs="reviews">
+                  <span class="proof-stat-num" data-filter-count="reviews">17</span>
+                  <span class="proof-stat-label">Member Reviews</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="proof-vault-action">
+              <button type="button" class="btn btn-gradient-blue neon-blue-glow proof-vault-open-btn" data-open-proofs="all">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" />
+                </svg>
+                <span>VIEW PROOFS (<span data-filter-count="all">31</span>)</span>
+              </button>
+              <p class="proof-vault-hint">Opens in a dedicated gallery view · Privacy protected</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Explore the APEX Experience Section -->
+      <section id="experience" class="section-block">
         <div class="container">
           <div class="section-header">
             <div>
-              <p class="section-kicker kicker-blue">01 · Official Visual Preview</p>
-              <h2 class="section-title">100% Free Bot Community Banner</h2>
+              <p class="section-kicker kicker-purple">02 · Gaming Community Hub</p>
+              <h2 class="section-title">EXPLORE THE APEX EXPERIENCE</h2>
             </div>
             <p class="section-subtitle">
-              Official APEX CARNAGE LIVE Free Fire Unban Bot artwork. Click the banner to inspect full detail.
+              Everything you need in one place — bot services, instant navigation, announcements, and community support.
             </p>
           </div>
-          <div id="showcase-grid" class="showcase-grid"></div>
+
+          <div class="experience-grid">
+            <article class="apex-glass experience-card reveal">
+              <div class="exp-icon exp-icon--red" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+              </div>
+              <h3 class="exp-title">FREE SERVICES</h3>
+              <p class="exp-desc">Explore available free bot services.</p>
+            </article>
+
+            <article class="apex-glass experience-card reveal">
+              <div class="exp-icon exp-icon--blue" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+              </div>
+              <h3 class="exp-title">INSTANT ACCESS</h3>
+              <p class="exp-desc">Navigate through a smooth and user-friendly bot experience.</p>
+            </article>
+
+            <article class="apex-glass experience-card reveal">
+              <div class="exp-icon exp-icon--red" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+              </div>
+              <h3 class="exp-title">LATEST UPDATES</h3>
+              <p class="exp-desc">Stay informed about new features and announcements.</p>
+            </article>
+
+            <article class="apex-glass experience-card reveal">
+              <div class="exp-icon exp-icon--blue" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
+              <h3 class="exp-title">COMMUNITY SUPPORT</h3>
+              <p class="exp-desc">Stay connected with the APEX community.</p>
+            </article>
+          </div>
+
+          <div class="apex-glass apex-gradient-border manifesto-card reveal">
+            <p class="manifesto-kicker">ONE DESTINATION. MULTIPLE SERVICES. ONE POWERFUL COMMUNITY.</p>
+            <p class="manifesto-copy">
+              Your experience starts here. Explore the available options, choose your preferred service, and stay connected with the latest APEX updates.
+            </p>
+            <p class="manifesto-headline">WELCOME TO THE NEXT LEVEL OF GAMING COMMUNITY EXPERIENCE.</p>
+          </div>
         </div>
       </section>
 
@@ -254,7 +358,7 @@
         <div class="container">
           <div class="section-header">
             <div>
-              <p class="section-kicker kicker-red">02 · Instagram Follow Reward</p>
+              <p class="section-kicker kicker-red">03 · Instagram Follow Reward</p>
               <h2 class="section-title">Verify Follow &amp; Claim Telegram Bot Reward</h2>
             </div>
             <p class="section-subtitle">
@@ -267,13 +371,13 @@
             <div class="step-pill" data-step="2"><span class="step-num">02</span><p class="step-label">Upload Screenshot</p></div>
             <div class="step-pill" data-step="3"><span class="step-num">03</span><p class="step-label">Preview Image</p></div>
             <div class="step-pill" data-step="4"><span class="step-num">04</span><p class="step-label">Confirm Follow</p></div>
-            <div class="step-pill" data-step="5"><span class="step-num">05</span><p class="step-label">Join Now</p></div>
+            <div class="step-pill" data-step="5"><span class="step-num">05</span><p class="step-label">Unban Your ID</p></div>
           </div>
 
           <div class="verify-layout">
             <div class="verify-left">
               <!-- Step 1 -->
-              <div class="apex-glass verify-card reveal">
+              <div id="step1-card" class="apex-glass verify-card reveal">
                 <div class="step1-row">
                   <div>
                     <p class="card-kicker">STEP 01 · INSTAGRAM</p>
@@ -332,8 +436,11 @@
                   </div>
                   <p class="dropzone-title">Screenshot Upload Locked</p>
                   <p class="dropzone-sub">
-                    First click <strong>Follow Instagram</strong> in Step 1 above — then the screenshot upload option will unlock here.
+                    First click <strong>Follow Instagram</strong> in Step 1 above — then the Select Screenshot option will open here.
                   </p>
+                  <button type="button" id="locked-select-btn" class="browse-label browse-label--locked">
+                    Select Screenshot (Complete Step 1 First)
+                  </button>
                 </div>
 
                 <div id="dropzone" class="dropzone hidden">
@@ -365,7 +472,7 @@
               </div>
 
               <!-- Step 4 -->
-              <div class="apex-glass verify-card reveal">
+              <div id="step4-card" class="apex-glass verify-card reveal">
                 <p class="card-kicker">STEP 04 · LOCAL CONFIRMATION</p>
                 <h3 class="card-title">Confirm Follow Screenshot</h3>
 
@@ -387,20 +494,20 @@
                 </div>
 
                 <p id="step1-warning" class="error-text hidden">
-                  Please complete Step 1 (Follow @apex.carnage.live) before unlocking the Telegram bot link.
+                  Please complete Step 1 (Follow @apex.carnage.live) first.
                 </p>
 
                 <div style="margin-top: 1.25rem;">
                   <button
                     type="button"
                     id="unlock-btn"
-                    class="btn btn-gradient-blue neon-blue-glow btn-full"
-                    disabled
+                    class="btn btn-gradient-blue neon-blue-glow btn-full is-locked-btn"
+                    aria-disabled="true"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                       <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 9.9-1" />
                     </svg>
-                    <span>Verify Screenshot</span>
+                    <span id="unlock-btn-label">Verify Screenshot</span>
                   </button>
                 </div>
               </div>
@@ -408,7 +515,7 @@
 
             <!-- Step 5 Right Card -->
             <div class="verify-right">
-              <div class="apex-glass apex-gradient-border unlock-panel">
+              <div id="step5-card" class="apex-glass apex-gradient-border unlock-panel">
                 <div>
                   <p class="card-kicker">STEP 05 · FREE ID UNBAN ACCESS</p>
 
@@ -448,7 +555,7 @@
                     </div>
                     <h3 class="unlock-title">Your Free ID Unban Link Is Ready!</h3>
                     <p class="card-text">
-                      Instagram follow verified! Tap the Join Now button below to enter directly and get your free ID unban.
+                      Instagram follow verified! Tap the Unban Your ID button below to open the bot directly and unban your ID.
                     </p>
 
                     <div id="confirmed-file-box" class="confirmed-file-box hidden">
@@ -461,13 +568,13 @@
                       target="_blank"
                       rel="noopener noreferrer"
                       data-telegram-track
-                      class="btn btn-gradient-blue neon-blue-glow btn-full"
+                      class="btn btn-gradient-red neon-red-glow btn-full"
                       style="margin-top: 1.5rem;"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
                       </svg>
-                      <span id="unlocked-bot-cta-label">JOIN NOW</span>
+                      <span id="unlocked-bot-cta-label">UNBAN YOUR ID</span>
                     </a>
                   </div>
                 </div>
@@ -491,11 +598,11 @@
         <div class="container">
           <div class="section-header">
             <div>
-              <p class="section-kicker kicker-purple">03 · Live Portal Metrics</p>
+              <p class="section-kicker kicker-purple">04 · Live Portal Metrics</p>
               <h2 class="section-title">Community Traffic &amp; Click Analytics</h2>
             </div>
             <p id="analytics-source-note" class="section-subtitle">
-              Displaying real counts recorded on this browser. Add your free CounterAPI v2 workspace slug in config.js for global counts across visitors.
+              Live community traffic and click counters starting from 500 across visitors and portal actions.
             </p>
           </div>
 
@@ -552,12 +659,12 @@
             <div class="footer-brand">
               <img src="./assets/icons/apex-logo.svg" alt="APEX CARNAGE LIVE" referrerpolicy="no-referrer" />
               <div>
-                <h2>APEX CARNAGE LIVE</h2>
-                <p>Gaming Technology | Community | Educational Purposes</p>
+                <h2>POWERED BY APEX CARNAGE LIVE</h2>
+                <p>Play Together. Stay Connected. Be APEX.</p>
               </div>
             </div>
             <p class="footer-desc">
-              APEX ID UNBAN BOT is the community portal for APEX CARNAGE LIVE, featuring local browser verification, original Web Audio soundscapes, and real public counter telemetry.
+              Welcome to APEX CARNAGE LIVE, your dedicated gaming community portal bringing gaming enthusiasts together with bot services, latest updates, and community support.
             </p>
           </div>
 
@@ -586,7 +693,7 @@
                   data-telegram-track
                   class="footer-link hidden"
                 >
-                  Telegram: Join Now (Link Ready)
+                  Telegram: Join Now
                 </a>
               </li>
             </ul>
@@ -606,10 +713,58 @@
 
         <div class="footer-bottom">
           <p>© 2026 APEX CARNAGE LIVE. All rights reserved.</p>
-          <p>Static Community Portal · Local Browser Verification</p>
+          <p>Play Together. Stay Connected. Be APEX.</p>
         </div>
       </div>
     </footer>
+
+    <!-- Dedicated Separate Proof Vault Overlay (Hidden until user clicks) -->
+    <div id="proof-vault-modal" class="proof-vault-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="proof-vault-title">
+      <div class="proof-vault-topbar">
+        <div class="container proof-vault-topbar-row">
+          <div class="proof-vault-topbar-left">
+            <button type="button" id="proof-vault-close" class="proof-back-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+              <span>Back to Website</span>
+            </button>
+            <div>
+              <p class="section-kicker kicker-blue" style="margin: 0;">APEX CARNAGE LIVE</p>
+              <h2 id="proof-vault-title" class="proof-vault-modal-title">ID UNBAN PROOF GALLERY</h2>
+            </div>
+          </div>
+          <div class="proof-vault-topbar-right">
+            <p id="proof-summary-badge" class="proof-summary-badge">Showing 31 Verified Proofs</p>
+            <button type="button" id="proof-vault-close-icon" class="modal-close" aria-label="Close proof gallery">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="container proof-vault-body">
+        <div class="proof-toolbar">
+          <div id="proof-filters" class="proof-filters" role="tablist" aria-label="Filter proof categories">
+            <button type="button" class="proof-filter-btn is-active" data-proof-filter="all" role="tab" aria-selected="true">
+              All Proofs <span class="proof-filter-count" data-filter-count="all">31</span>
+            </button>
+            <button type="button" class="proof-filter-btn" data-proof-filter="before-after" role="tab" aria-selected="false">
+              Before → After <span class="proof-filter-count" data-filter-count="before-after">8</span>
+            </button>
+            <button type="button" class="proof-filter-btn" data-proof-filter="multi-id" role="tab" aria-selected="false">
+              Multi-ID Unbans <span class="proof-filter-count" data-filter-count="multi-id">6</span>
+            </button>
+            <button type="button" class="proof-filter-btn" data-proof-filter="reviews" role="tab" aria-selected="false">
+              Member Reviews <span class="proof-filter-count" data-filter-count="reviews">17</span>
+            </button>
+          </div>
+        </div>
+        <div id="proof-grid" class="proof-grid"></div>
+      </div>
+    </div>
 
     <!-- Image Lightbox Modal -->
     <div id="lightbox-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="Image preview">
@@ -619,14 +774,28 @@
             <p id="lightbox-cat" class="banner-cat"></p>
             <h3 id="lightbox-title" class="card-title" style="margin-top: 0.15rem;"></h3>
           </div>
-          <button type="button" id="lightbox-close" class="modal-close" aria-label="Close image preview">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
-          </button>
+          <div class="modal-head-actions">
+            <span id="lightbox-counter" class="lightbox-counter hidden"></span>
+            <button type="button" id="lightbox-prev" class="modal-nav-btn hidden" aria-label="Previous proof">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <button type="button" id="lightbox-next" class="modal-nav-btn hidden" aria-label="Next proof">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+            <button type="button" id="lightbox-close" class="modal-close" aria-label="Close image preview">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
         <div class="lightbox-img-box">
           <img id="lightbox-img" alt="" referrerpolicy="no-referrer" />
+          <video id="lightbox-video" class="hidden" controls playsinline preload="metadata"></video>
         </div>
         <p id="lightbox-caption" class="card-text" style="padding: 0.75rem 0.25rem 0.25rem;"></p>
       </div>
