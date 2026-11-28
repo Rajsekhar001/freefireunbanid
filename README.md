@@ -17,6 +17,11 @@ assets/
     apex-bg.mp4
   icons/
     apex-logo.svg
+  proofs/
+    proof-01.jpg ... proof-31.jpg
+.github/
+  workflows/
+    deploy.yml
 README.md
 LICENSE
 ```
